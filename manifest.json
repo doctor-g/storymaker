@@ -1,0 +1,7 @@
+{
+  "name": "storymaker",
+  "short_name": "storymaker",
+  "description": "A tool to make interactive stories on and for the mobile web",
+  "start_url": "/",
+  "display": "standalone"
+}

@@ -1,0 +1,63 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="../node-editor/node-editor.html">
+<link rel="import" href="../node-list/node-list.html">
+
+
+
+<dom-module id="storymaker-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <paper-button raised on-tap="_addNode">Add Node</paper-button>
+    <node-list data="[[data]]"></node-list>
+    <node-editor node="{{selectedNode}}"></node-editor>
+
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class StorymakerApp extends Polymer.Element {
+      static get is() { return 'storymaker-app'; }
+      static get properties() {
+        return {
+          data: {
+            type: Object,
+            notify: true,
+            value: function() { return {} },
+          },
+          selectedNode: {
+            type: Object,
+            notify: true
+          }
+        };
+      }
+
+      static get observers() {
+        return [
+          '__dataChanged(data.*)'
+        ]
+      }
+
+      _addNode() {
+        this.set('data.key', {name: 'A name'});
+        this.selectedNode = this.data.key;
+        this.linkPaths('selectedNode', 'data.key');
+      }
+
+      __dataChanged(data) {
+        console.log('Update, data is now ', data);
+      }
+    }
+
+    window.customElements.define(StorymakerApp.is, StorymakerApp);
+  </script>
+</dom-module>

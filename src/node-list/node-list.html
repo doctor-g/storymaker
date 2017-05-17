@@ -1,0 +1,72 @@
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">
+<link rel="import"
+      href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import"
+      href="../../bower_components/polymer/lib/elements/dom-if.html">
+
+<dom-module id="node-list">
+  <template>
+    <style>
+       :host {
+        display: block;
+      }
+    </style>
+
+    Nodes:
+    <template is="dom-if"
+              if="[[__isEmpty(__items)]]">
+      None.
+    </template>
+    <template is="dom-if"
+              if="[[!__isEmpty(__items)]]">
+      <ul>
+        <template is="dom-repeat"
+                  items="[[__items]]">
+          <li>[[__lookup(item)]]</li>
+        </template>
+      </ul>
+    </template>
+
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class NodeList extends Polymer.Element {
+      static get is() { return 'node-list'; }
+      static get properties() {
+        return {
+          data: {
+            type: Object
+          },
+          __items: {
+            type: Array,
+            computed: '__computeItems(data.*)'
+          }
+        };
+      }
+
+      __isEmpty(array) {
+        return array.length === 0;
+      }
+
+      __computeItems(dataChangeRecord) {
+        console.log('Recomputing items with ', dataChangeRecord);
+        var keys = Object.keys(dataChangeRecord.base);
+        console.log('So keys are ', keys);
+        return keys;
+      }
+
+      __lookup(key) {
+        console.log('looking up ', key);
+        return this.data[key].name;
+      }
+
+    }
+
+    window.customElements.define(NodeList.is, NodeList);
+  </script>
+</dom-module>
