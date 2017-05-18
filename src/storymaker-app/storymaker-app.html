@@ -37,6 +37,11 @@
           selectedNode: {
             type: Object,
             notify: true
+          },
+
+          __nextKey: {
+            type: Number,
+            value: 0
           }
         };
       }
@@ -48,7 +53,8 @@
       }
 
       _addNode() {
-        this.set('data.key', {name: 'A name'});
+        var key = 'key' + this.__nextKey++;
+        this.set('data.' + key, {name: 'A name'});
         this.selectedNode = this.data.key;
         this.linkPaths('selectedNode', 'data.key');
       }
