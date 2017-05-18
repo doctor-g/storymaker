@@ -24,11 +24,15 @@
     </template>
     <template is="dom-if"
               if="[[!__isEmpty(__keys)]]">
-      <paper-listbox selected="0">
+      <paper-listbox selected="0"
+                     on-iron-select="__onIronSelect">
         <template is="dom-repeat"
                   items="[[__keys]]"
                   as="key">
-          <paper-item>[[__lookup(key)]]</paper-item>
+          <paper-item key="[[key]]"
+                      value="[[__lookup(key)]]">
+            [[__lookupName(key)]]
+          </paper-item>
         </template>
       </paper-listbox>
     </template>
@@ -74,7 +78,22 @@
       }
 
       __lookup(key) {
+        return this.data[key];
+      }
+
+      __lookupName(key) {
         return this.data[key].name;
+      }
+
+      __onIronSelect(event) {
+        this.dispatchEvent(new CustomEvent('node-select',
+          {
+            detail:
+            {
+              key: event.detail.item.key,
+              value: event.detail.item.value
+            }
+          }));
       }
 
     }

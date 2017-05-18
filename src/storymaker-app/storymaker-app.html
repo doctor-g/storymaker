@@ -15,7 +15,7 @@
     </style>
 
     <paper-button raised on-tap="_addNode">Add Node</paper-button>
-    <node-list data="[[data]]"></node-list>
+    <node-list data="[[data]]" on-node-select="__select"></node-list>
     <node-editor node="{{selectedNode}}"></node-editor>
 
   </template>
@@ -55,6 +55,10 @@
 
       __dataChanged(data) {
         console.log('Update, data is now ', data);
+      }
+
+      __select(e) {
+        console.log('node selected, key:', e.detail.key, ', value: ', e.detail.value);
       }
     }
 
