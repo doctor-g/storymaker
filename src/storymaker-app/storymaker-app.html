@@ -53,8 +53,9 @@
       }
 
       _addNode() {
-        var key = 'key' + this.__nextKey++;
-        this.set('data.' + key, {name: 'A name'});
+        const id = this.__nextKey++;
+        var key = 'key' + id;
+        this.set('data.' + key, {name: 'Node_'+id });
         this.selectedNode = this.data.key;
         this.linkPaths('selectedNode', 'data.key');
       }
