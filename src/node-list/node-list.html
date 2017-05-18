@@ -3,8 +3,6 @@
 <link rel="import"
       href="../../bower_components/polymer/lib/elements/dom-repeat.html">
 <link rel="import"
-      href="../../bower_components/polymer/lib/elements/dom-if.html">
-<link rel="import"
       href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import"
       href="../../bower_components/paper-item/paper-item.html">
@@ -18,24 +16,19 @@
     </style>
 
     Nodes:
-    <template is="dom-if"
-              if="[[__isEmpty(__keys)]]">
-      None.
-    </template>
-    <template is="dom-if"
-              if="[[!__isEmpty(__keys)]]">
-      <paper-listbox selected="0"
-                     on-iron-select="__onIronSelect">
-        <template is="dom-repeat"
-                  items="[[__keys]]"
-                  as="key">
-          <paper-item key="[[key]]"
-                      value="[[__lookup(key)]]">
-            [[__lookupName(key)]]
-          </paper-item>
-        </template>
-      </paper-listbox>
-    </template>
+
+    <paper-listbox id="list"
+                   selected-item="{{__selectedKey}}">
+      <template is="dom-repeat"
+                items="[[__keys]]"
+                as="key">
+        <paper-item key="[[key]]"
+                    value="[[__lookup(key)]]">
+          [[__lookupName(key)]]
+        </paper-item>
+      </template>
+    </paper-listbox>
+
 
   </template>
 
@@ -55,6 +48,10 @@
             type: Object,
             notify: true,
             readOnly: true
+          },
+          __selectedKey: {
+            type: String,
+            observer: '__selectedKeyChanged'
           },
           __keys: {
             type: Array,
@@ -84,7 +81,7 @@
       }
 
       __countDots(s) {
-          return s.split('.').length - 1;
+        return s.split('.').length - 1;
       }
 
       __lookup(key) {
@@ -95,25 +92,26 @@
         return this.data[key].name;
       }
 
-      __onIronSelect(event) {
-        const key = event.detail.item.key;
-        const value = event.detail.item.value;
-        this.__selectNode(key,value);
-      }
-
-      __selectNode(key,value) {
-        if (!value) {
-          value = this.data[key];
-        }
-        
+      __selectNode(key) {
+        const value = this.data[key];
         this._setSelectedNode(value);
         this.linkPaths('selectedNode', 'data.' + key);
       }
 
+      // When the data changes, check to see if we need to add a new entry to the list.
       __dataChanged(change) {
         if (this.__countDots(change.path) == 1) {
           const keySubstringPosition = 5; // "data.[key]"
+          const key = change.path.substring(keySubstringPosition);
           this.__selectNode(change.path.substring(keySubstringPosition));
+          // We're assuming the change was adding a new node, so just select the last one.
+          this.$.list.selected = this.$.list.items.length;
+        }
+      }
+
+      __selectedKeyChanged(item) {
+        if (item) {
+          this.__selectNode(item.key);
         }
       }
 
