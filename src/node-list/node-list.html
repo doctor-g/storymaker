@@ -54,14 +54,20 @@
       }
 
       __computeItems(dataChangeRecord) {
-        console.log('Recomputing items with ', dataChangeRecord);
-        var keys = Object.keys(dataChangeRecord.base);
-        console.log('So keys are ', keys);
-        return keys;
+        function __countDots (s) {
+          return s.split('.') - 1;
+        }
+        // If the path contains on dot, it must be "data.[key]", where "[key]"
+        // is the new key added. If it were a subproperty, it would be something like
+        // "data.[key].[value]".
+        if (__countDots(dataChangeRecord.path) == 1) {
+          console.log('In node-list, recomputing items with ', dataChangeRecord);
+          var keys = Object.keys(dataChangeRecord.base);
+          return keys;
+        }
       }
 
       __lookup(key) {
-        console.log('looking up ', key);
         return this.data[key].name;
       }
 
