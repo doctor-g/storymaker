@@ -51,6 +51,11 @@
           data: {
             type: Object
           },
+          selectedNode: {
+            type: Object,
+            notify: true,
+            readOnly: true
+          },
           __keys: {
             type: Array,
             computed: '__extractKeys(data.*)'
@@ -71,7 +76,6 @@
         // "data.[key].[value]".
         // The first change comes in at path "data", so we have to do <=1, not == 1.
         if (__countDots(dataChangeRecord.path) <= 1) {
-          console.log('In node-list, recomputing items with ', dataChangeRecord);
           var keys = Object.keys(dataChangeRecord.base);
           return keys;
         }
@@ -86,14 +90,10 @@
       }
 
       __onIronSelect(event) {
-        this.dispatchEvent(new CustomEvent('node-select',
-          {
-            detail:
-            {
-              key: event.detail.item.key,
-              value: event.detail.item.value
-            }
-          }));
+        const key = event.detail.item.key;
+        const value = event.detail.item.value;
+        this._setSelectedNode(value);
+        this.linkPaths('selectedNode', 'data.' + key);
       }
 
     }

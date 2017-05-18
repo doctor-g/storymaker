@@ -29,17 +29,7 @@
             }
         };
       }
-      static get observers() {
-        return [
-          '__nodeChanged(node.*)'
-        ]
-      }
-
-      __nodeChanged() {
-        console.log('in editor, node changed to ', this.node);
-      }
     }
-    
 
     window.customElements.define(NodeEditor.is, NodeEditor);
   </script>

@@ -14,8 +14,8 @@
       }
     </style>
 
-    <paper-button raised on-tap="_addNode">Add Node</paper-button>
-    <node-list data="[[data]]" on-node-select="__select"></node-list>
+    <paper-button raised on-tap="__addNode">Add Node</paper-button>
+    <node-list data="[[data]]" selected-node="{{selectedNode}}"></node-list>
     <node-editor node="{{selectedNode}}"></node-editor>
 
   </template>
@@ -46,26 +46,10 @@
         };
       }
 
-      static get observers() {
-        return [
-          '__dataChanged(data.*)'
-        ]
-      }
-
-      _addNode() {
+      __addNode() {
         const id = this.__nextKey++;
         var key = 'key' + id;
         this.set('data.' + key, {name: 'Node_'+id });
-        this.selectedNode = this.data.key;
-        this.linkPaths('selectedNode', 'data.key');
-      }
-
-      __dataChanged(data) {
-        console.log('Update, data is now ', data);
-      }
-
-      __select(e) {
-        console.log('node selected, key:', e.detail.key, ', value: ', e.detail.value);
       }
     }
 
