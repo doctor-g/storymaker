@@ -4,6 +4,10 @@
       href="../../bower_components/polymer/lib/elements/dom-repeat.html">
 <link rel="import"
       href="../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import"
+      href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import"
+      href="../../bower_components/paper-item/paper-item.html">
 
 <dom-module id="node-list">
   <template>
@@ -15,17 +19,18 @@
 
     Nodes:
     <template is="dom-if"
-              if="[[__isEmpty(__items)]]">
+              if="[[__isEmpty(__keys)]]">
       None.
     </template>
     <template is="dom-if"
-              if="[[!__isEmpty(__items)]]">
-      <ul>
+              if="[[!__isEmpty(__keys)]]">
+      <paper-listbox selected="0">
         <template is="dom-repeat"
-                  items="[[__items]]">
-          <li>[[__lookup(item)]]</li>
+                  items="[[__keys]]"
+                  as="key">
+          <paper-item>[[__lookup(key)]]</paper-item>
         </template>
-      </ul>
+      </paper-listbox>
     </template>
 
   </template>
@@ -42,9 +47,9 @@
           data: {
             type: Object
           },
-          __items: {
+          __keys: {
             type: Array,
-            computed: '__computeItems(data.*)'
+            computed: '__extractKeys(data.*)'
           }
         };
       }
@@ -53,14 +58,15 @@
         return array.length === 0;
       }
 
-      __computeItems(dataChangeRecord) {
-        function __countDots (s) {
-          return s.split('.') - 1;
+      __extractKeys(dataChangeRecord) {
+        function __countDots(s) {
+          return s.split('.').length - 1;
         }
         // If the path contains on dot, it must be "data.[key]", where "[key]"
         // is the new key added. If it were a subproperty, it would be something like
         // "data.[key].[value]".
-        if (__countDots(dataChangeRecord.path) == 1) {
+        // The first change comes in at path "data", so we have to do <=1, not == 1.
+        if (__countDots(dataChangeRecord.path) <= 1) {
           console.log('In node-list, recomputing items with ', dataChangeRecord);
           var keys = Object.keys(dataChangeRecord.base);
           return keys;
