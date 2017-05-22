@@ -4,9 +4,13 @@
       href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import"
       href="../../bower_components/paper-button/paper-button.html">
+<link rel="import"
+      href="../../bower_components/paper-tabs/paper-tabs.html">
 
 <link rel="import"
       href="../node-editor/node-editor.html">
+<link rel="import"
+      href="../node-preview/node-preview.html">
 <link rel="import"
       href="../node-list/node-list.html">
 
@@ -33,7 +37,16 @@
       <div>
         Add a node to begin
       </div>
-      <node-editor node="{{selectedNode}}"></node-editor>
+      <div>
+        <paper-tabs selected="{{__editOrPreviewSelection}}">
+          <paper-tab>Edit</paper-tab>
+          <paper-tab>Preview</paper-tab>
+        </paper-tabs>
+        <iron-pages selected="[[__editOrPreviewSelection]]">
+          <node-editor node="{{selectedNode}}"></node-editor>
+          <node-preview node="[[selectedNode]]"></node-preview>
+        </iron-pages>
+      </div>
     </iron-pages>
 
   </template>
@@ -61,6 +74,11 @@
           __nextKey: {
             type: Number,
             value: 0
+          },
+
+          __editOrPreviewSelection: {
+            type: Number,
+            value: 0
           }
         };
       }
@@ -68,7 +86,12 @@
       __addNode() {
         const id = this.__nextKey++;
         var key = 'key' + id;
-        this.set('data.' + key, { name: 'Node_' + id });
+        this.set('data.' + key,
+          {
+            name: 'Node_' + id,
+            content: []
+          }
+        );
       }
 
       __determineIronPageSelection(selectedNode) {

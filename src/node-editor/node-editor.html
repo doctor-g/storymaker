@@ -1,11 +1,13 @@
 <link rel="import"
       href="../../bower_components/polymer/polymer-element.html">
 <link rel="import"
-      href="../../bower_components/paper-input/paper-input.html">
+      href="../../bower_components/polymer/lib/elements/dom-repeat.html">
 <link rel="import"
       href="../../bower_components/paper-button/paper-button.html">
-
-
+<link rel="import"
+      href="../../bower_components/paper-input/paper-input.html">
+<link rel="import"
+      href="../../bower_components/paper-input/paper-textarea.html">
 
 <dom-module id="node-editor">
   <template>
@@ -18,7 +20,14 @@
     <paper-input label="Name"
                  always-float-label
                  value="{{node.name}}"></paper-input>
+    <paper-button raised
+                  on-tap="_addTextContent">Add Text</paper-button>
 
+    <template is="dom-repeat"
+              items="{{node.content}}">
+      <paper-textarea label="Text"
+                      value="{{item.text}}"></paper-textarea>
+    </template>
   </template>
 
   <script>
@@ -35,6 +44,15 @@
             notify: true
           }
         };
+      }
+
+      _addTextContent() {
+        this.push('node.content',
+          {
+            type: 'text',
+            value: ''
+          }
+        );
       }
     }
 
