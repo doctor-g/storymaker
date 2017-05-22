@@ -13,8 +13,8 @@
       href="../node-preview/node-preview.html">
 <link rel="import"
       href="../node-list/node-list.html">
-
-
+<link rel="import"
+      href="../object-key-mapping/object-key-mapping.html">
 
 <dom-module id="storymaker-app">
   <template>
@@ -29,9 +29,12 @@
       }
     </style>
 
+    <object-key-mapping data="[[data]]"
+                        keys="{{keys}}"></object-key-mapping>
+
     <paper-button raised
                   on-tap="__addNode">Add Node</paper-button>
-    <node-list data="[[data]]"
+    <node-list data="[[data]]" keys="[[keys]]"
                selected-node="{{selectedNode}}"></node-list>
     <iron-pages selected="[[__determineIronPageSelection(selectedNode)]]">
       <div>
@@ -43,7 +46,9 @@
           <paper-tab>Preview</paper-tab>
         </paper-tabs>
         <iron-pages selected="[[__editOrPreviewSelection]]">
-          <node-editor node="{{selectedNode}}"></node-editor>
+          <node-editor node="{{selectedNode}}"
+                       data="[[data]]"
+                       keys="[[keys]]"></node-editor>
           <node-preview node="[[selectedNode]]"></node-preview>
         </iron-pages>
       </div>
@@ -65,6 +70,12 @@
             notify: true,
             value: function () { return {} },
           },
+
+          keys: {
+            type: Array,
+            notify: true
+          },
+
           selectedNode: {
             type: Object,
             notify: true,

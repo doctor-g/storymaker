@@ -2,6 +2,13 @@
       href="../../bower_components/polymer/polymer-element.html">
 <link rel="import"
       href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import"
+      href="../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import"
+      href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import"
+      href="../../bower_components/paper-button/paper-button.html">
+
 
 <dom-module id="node-preview">
     <template>
@@ -13,16 +20,20 @@
 
         <template is="dom-repeat"
                   items="[[node.content]]">
-            <p>[[item.text]]</p>
+            <iron-pages attr-for-selected="type"
+                        selected="[[item.type]]">
+                <p type="text">[[item.value]]</p>
+                <paper-button raised type="jump">[[item.text]]</paper-button>
+            </iron-pages>
         </template>
 
     </template>
 
     <script>
         /**
-     * @customElement
-     * @polymer
-     */
+         * @customElement
+         * @polymer
+         */
         class NodePreview extends Polymer.Element {
             static get is() { return 'node-preview'; }
             static get properties() {
@@ -30,7 +41,6 @@
                     node: Object
                 };
             }
-
         }
 
         window.customElements.define(NodePreview.is, NodePreview);

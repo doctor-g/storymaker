@@ -1,0 +1,46 @@
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="object-key-mapping">
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class ObjectKeyMapping extends Polymer.Element {
+            static get is() { return 'object-key-mapping'; }
+            static get properties() {
+                return {
+                    data: {
+                        type: Object
+                    },
+                    keys: {
+                        type: Array,
+                        notify: true,
+                        computed: '__extractKeys(data.*)'
+                    }
+                };
+            }
+
+            __extractKeys(dataChangeRecord) {
+                // If the path contains on dot, it must be "data.[key]", where "[key]"
+                // is the new key added. If it were a subproperty, it would be something like
+                // "data.[key].[value]".
+                // The first change comes in at path "data", so we have to do <=1, not == 1.
+                if (this.__countDots(dataChangeRecord.path) <= 1) {
+                    var keys = Object.keys(dataChangeRecord.base);
+                    return keys;
+                }
+                // Otherwise return the cached one
+                else return this.keys;
+            }
+
+            __countDots(s) {
+                return s.split('.').length - 1;
+            }
+        }
+
+        window.customElements.define(ObjectKeyMapping.is, ObjectKeyMapping);
+    </script>
+</dom-module>

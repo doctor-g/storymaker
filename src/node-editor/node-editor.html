@@ -1,13 +1,24 @@
 <link rel="import"
       href="../../bower_components/polymer/polymer-element.html">
 <link rel="import"
+      href="../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import"
       href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import"
+      href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import"
       href="../../bower_components/paper-button/paper-button.html">
 <link rel="import"
+      href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import"
       href="../../bower_components/paper-input/paper-input.html">
 <link rel="import"
+      href="../../bower_components/paper-item/paper-item.html">
+<link rel="import"
+      href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import"
       href="../../bower_components/paper-input/paper-textarea.html">
+
 
 <dom-module id="node-editor">
   <template>
@@ -20,13 +31,40 @@
     <paper-input label="Name"
                  always-float-label
                  value="{{node.name}}"></paper-input>
-    <paper-button raised
-                  on-tap="_addTextContent">Add Text</paper-button>
+    <div id="buttonbar">
+      <paper-button raised
+                    on-tap="_addTextContent">Add Text</paper-button>
+      <paper-button raised
+                    on-tap="_addJumpButton">Add Jump</paper-button>
+    </div>
 
     <template is="dom-repeat"
               items="{{node.content}}">
-      <paper-textarea label="Text"
-                      value="{{item.text}}"></paper-textarea>
+
+      <iron-pages selected="[[item.type]]"
+                  attr-for-selected="type">
+        <paper-textarea type="text"
+                        value="{{item.value}}"
+                        label="Text"
+                        always-float-label></paper-textarea>
+        <div type="jump">
+          <paper-input label="Button text"
+                       always-float-label
+                       value="{{item.text}}"></paper-input>
+          <paper-dropdown-menu label="Target Node"
+                               always-float-label>
+            <paper-listbox slot="dropdown-content"
+                           selected="{{item.target}}"
+                           fallback-selection="0">
+              <template is="dom-repeat"
+                        items="[[keys]]">
+                <paper-item>[[__lookupNameOfNode(data,item)]]</paper-item>
+              </template>
+            </paper-listbox>
+          </paper-dropdown-menu>
+        </div>
+      </iron-pages>
+
     </template>
   </template>
 
@@ -39,6 +77,8 @@
       static get is() { return 'node-editor'; }
       static get properties() {
         return {
+          data: Object,
+          keys: Array,
           node: {
             type: Object,
             notify: true
@@ -54,6 +94,21 @@
           }
         );
       }
+
+      _addJumpButton() {
+        const firstNodeKey = Object.keys(this.data)[0];
+        this.push('node.content',
+          {
+            type: 'jump',
+            text: '',
+            target: firstNodeKey
+          })
+      }
+
+      __lookupNameOfNode(data, key) {
+        return data[key].name;
+      }
+
     }
 
     window.customElements.define(NodeEditor.is, NodeEditor);

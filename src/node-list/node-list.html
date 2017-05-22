@@ -7,6 +7,7 @@
 <link rel="import"
       href="../../bower_components/paper-item/paper-item.html">
 
+
 <dom-module id="node-list">
   <template>
     <style>
@@ -17,7 +18,7 @@
     <paper-listbox id="list"
                    selected-item="{{__selectedKey}}">
       <template is="dom-repeat"
-                items="[[__keys]]"
+                items="[[keys]]"
                 as="key">
         <paper-item key="[[key]]"
                     value="[[__lookup(key)]]">
@@ -39,7 +40,10 @@
       static get properties() {
         return {
           data: {
-            type: Object
+            type: Object,
+          },
+          keys: {
+            type: Array
           },
           selectedNode: {
             type: Object,
@@ -50,10 +54,6 @@
             type: String,
             observer: '__selectedKeyChanged'
           },
-          __keys: {
-            type: Array,
-            computed: '__extractKeys(data.*)'
-          }
         };
       }
       static get observers() {
@@ -64,23 +64,6 @@
 
       __isEmpty(array) {
         return array.length === 0;
-      }
-
-      __extractKeys(dataChangeRecord) {
-        // If the path contains on dot, it must be "data.[key]", where "[key]"
-        // is the new key added. If it were a subproperty, it would be something like
-        // "data.[key].[value]".
-        // The first change comes in at path "data", so we have to do <=1, not == 1.
-        if (this.__countDots(dataChangeRecord.path) <= 1) {
-          var keys = Object.keys(dataChangeRecord.base);
-          return keys;
-        }
-        // Otherwise return the cached one
-        else return this.__keys;
-      }
-
-      __countDots(s) {
-        return s.split('.').length - 1;
       }
 
       __lookup(key) {
@@ -99,13 +82,17 @@
 
       // When the data changes, check to see if we need to add a new entry to the list.
       __dataChanged(change) {
-        if (this.__countDots(change.path) == 1) {
+        if (this.__countDots(change.path) == 1) { // One dot, as in "data.[key]"
           const keySubstringPosition = 5; // "data.[key]"
           const key = change.path.substring(keySubstringPosition);
           this.__selectNode(change.path.substring(keySubstringPosition));
           // We're assuming the change was adding a new node, so just select the last one.
           this.$.list.selected = this.$.list.items.length;
         }
+      }
+
+      __countDots(s) {
+        return s.split('.').length - 1;
       }
 
       __selectedKeyChanged(item) {
