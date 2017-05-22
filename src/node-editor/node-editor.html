@@ -1,16 +1,23 @@
-<link rel="import" href="../../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">
+<link rel="import"
+      href="../../bower_components/paper-input/paper-input.html">
+<link rel="import"
+      href="../../bower_components/paper-button/paper-button.html">
+
 
 
 <dom-module id="node-editor">
   <template>
     <style>
-      :host {
+       :host {
         display: block;
       }
     </style>
 
-   <paper-input label="Name" always-float-label value="{{node.name}}"></paper-input>
+    <paper-input label="Name"
+                 always-float-label
+                 value="{{node.name}}"></paper-input>
 
   </template>
 
@@ -23,10 +30,10 @@
       static get is() { return 'node-editor'; }
       static get properties() {
         return {
-            node: {
-                type: Object,
-                notify: true
-            }
+          node: {
+            type: Object,
+            notify: true
+          }
         };
       }
     }

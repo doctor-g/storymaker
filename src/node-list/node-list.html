@@ -14,9 +14,6 @@
         display: block;
       }
     </style>
-
-    Nodes:
-
     <paper-listbox id="list"
                    selected-item="{{__selectedKey}}">
       <template is="dom-repeat"
@@ -114,8 +111,6 @@
           this.__selectNode(item.key);
         }
       }
-
-
     }
 
     window.customElements.define(NodeList.is, NodeList);
