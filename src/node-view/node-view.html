@@ -7,6 +7,8 @@
 <link rel="import"
       href="../../bower_components/paper-button/paper-button.html">
 
+<link rel="import"
+      href="../content/content.html">
 
 <dom-module id="node-view">
     <template>
@@ -15,23 +17,21 @@
                 display: block;
             }
 
-            .preview > paper-button:active:after  {
-                content: ' (Preview!)'
+            .preview>content-button-view:active:after {
+                content: ' (Preview, no jumping)'
             }
         </style>
 
         <template is="dom-repeat"
                   items="[[node.content]]">
             <iron-pages attr-for-selected="type"
-                        selected="[[item.type]]" 
+                        selected="[[item.type]]"
                         class$="[[__computePreviewClass(preview)]]">
-                <p type="text">[[item.value]]</p>
-                <paper-button type="jump"
-                              raised
-                              on-tap="__jump"
-                              jump="[[item.target]]">
-                    [[item.text]]
-                </paper-button>
+                <content-text-view type="text"
+                                   content="[[item]]"></content-text-view>
+                <content-button-view type="jump"
+                                     content="[[item]]"
+                                     on-tap="__jump"></content-button-view>
             </iron-pages>
         </template>
 

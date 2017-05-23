@@ -1,0 +1,31 @@
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">
+<link rel="import"
+      href="../../bower_components/paper-button/paper-button.html">
+
+<dom-module id="content-button-view">
+    <template>
+        <style>
+             :host {
+                display: block;
+            }
+        </style>
+        <paper-button raised>[[content.text]]</paper-button>
+    </template>
+
+    <script>
+        class ContentButtonView extends Polymer.Element {
+            static get is() { return 'content-button-view'; }
+            static get properties() {
+                return {
+                    content: {
+                        type: Object,
+                        notify: true
+                    }
+                };
+            }
+        }
+
+        window.customElements.define(ContentButtonView.is, ContentButtonView);
+    </script>
+</dom-module>

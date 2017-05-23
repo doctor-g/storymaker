@@ -1,0 +1,66 @@
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">
+<link rel="import"
+      href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import"
+      href="../../bower_components/paper-input/paper-input.html">
+<link rel="import"
+      href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import"
+      href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import"
+      href="../../bower_components/paper-item/paper-item.html">
+
+<!-- Ensure Web Animations polyfill is loaded since neon-animation 2.0 doesn't import it -->
+<link rel="import"
+      href="../../bower_components/neon-animation/web-animations.html">
+
+
+<dom-module id="content-button-editor">
+    <template>
+        <style>
+             :host {
+                display: block;
+            }
+        </style>
+        <paper-input label="Button text"
+                     always-float-label
+                     value="{{content.text}}"></paper-input>
+        <paper-dropdown-menu label="Target Node"
+                             always-float-label>
+            <!-- Use event to set selection so we can ensure it's the string, not the index -->
+            <paper-listbox id="listbox"
+                           slot="dropdown-content"
+                           attr-for-selected="key"
+                           selected="{{content.target}}">
+                <template is="dom-repeat"
+                          items="[[keys]]"
+                          as="key">
+                    <paper-item key="[[key]]">[[__lookupNameOfNode(nodes,key)]]</paper-item>
+                </template>
+            </paper-listbox>
+        </paper-dropdown-menu>
+    </template>
+
+    <script>
+        class ContentButtonEditor extends Polymer.Element {
+            static get is() { return 'content-button-editor'; }
+            static get properties() {
+                return {
+                    nodes: Object,
+                    keys: Array,
+                    content: {
+                        type: Object,
+                        notify: true
+                    }
+                };
+            }
+
+            __lookupNameOfNode(nodes, key) {
+                return nodes[key].name;
+            }
+        }
+
+        window.customElements.define(ContentButtonEditor.is, ContentButtonEditor);
+    </script>
+</dom-module>

@@ -20,14 +20,15 @@
             }
         </style>
 
-        <object-key-mapping data="[[data]]" keys="{{__keys}}"></object-key-mapping>
+        <object-key-mapping data="[[data]]"
+                            keys="{{__keys}}"></object-key-mapping>
 
-        <paper-listbox id="listbox" on-iron-select="__onIronSelect">
+        <paper-listbox id="listbox"
+                       attr-for-selected="key">
             <template is="dom-repeat"
                       items="[[__keys]]"
                       as="key">
-                <paper-item key="[[key]]"
-                            value="[[__lookup(key)]]">
+                <paper-item key="[[key]]">
                     [[__lookupName(data.*,key)]]
                 </paper-item>
             </template>
@@ -42,29 +43,15 @@
                     data: Object,
                     __keys: {
                         type: Array
-                    },
-                    selectedValue: {
-                        type: Object,
-                        notify: true,
-                        readOnly: true
                     }
                 };
-            }
-
-            __lookup(key) {
-                return this.data[key];
             }
 
             __lookupName(dataChangeRecord, key) {
                 return dataChangeRecord.base[key].name;
             }
 
-            __onIronSelect(event) {
-                this._setSelectedValue(event.detail.item.value);
-            }
-
             clearSelection() {
-                this._setSelectedValue(null);
                 this.$.listbox.selected = null;
             }
         }

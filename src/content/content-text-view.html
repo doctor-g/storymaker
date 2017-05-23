@@ -1,0 +1,30 @@
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="content-text-view">
+  <template>
+    <style>
+       :host {
+        display: block;
+      }
+    </style>
+    <p>[[content.value]]</p>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class ContentTextView extends Polymer.Element {
+      static get is() { return 'content-text-view'; }
+      static get properties() {
+        return {
+          content: Object
+        };
+      }
+    }
+
+    window.customElements.define(ContentTextView.is, ContentTextView);
+  </script>
+</dom-module>
