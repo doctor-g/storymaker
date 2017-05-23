@@ -8,13 +8,18 @@
       href="../../bower_components/paper-tabs/paper-tabs.html">
 
 <link rel="import"
-      href="../node-editor/node-editor.html">
+      href="../keyed-list/keyed-list.html">
 <link rel="import"
-      href="../node-list/node-list.html">
+      href="../node-editor/node-editor.html">
 <link rel="import"
       href="../node-view/node-view.html">
 <link rel="import"
       href="../object-key-mapping/object-key-mapping.html">
+<link rel="import"
+      href="../variable-editor/variable-editor.html">
+
+
+
 
 <dom-module id="game-editor">
   <template>
@@ -23,7 +28,7 @@
         display: block;
       }
 
-      node-list {
+      .list {
         border-width: 1px;
         border-style: solid;
       }
@@ -35,27 +40,32 @@
     <paper-button raised
                   on-tap="__addNode">Add Node</paper-button>
     <paper-button raised
+                  on-tap="__addVariable">Add Variable</paper-button>
+    <paper-button raised
                   on-tap="__play"
                   disabled="[[__isNodeSetEmpty(data.*)]]">Play</paper-button>
 
-    <node-list data="[[data]]"
-               keys="[[keys]]"
-               selected-node="{{selectedNode}}"></node-list>
-    <iron-pages selected="[[__determineIronPageSelection(selectedNode)]]">
-      <div>
-        Add a node to begin
+    <keyed-list id="nodelist"
+                class="list"
+                data="[[data]]"
+                on-iron-select="__onNodeSelect">
+    </keyed-list>
+    <keyed-list id="variablelist"
+                class="list"
+                data="[[variables]]"
+                on-iron-select="__onVariableSelect">
+    </keyed-list>
+
+    <iron-pages selected="[[__currentView]]"
+                attr-for-selected="view">
+      <div view="empty">
+        Empty game. Start adding stuff!
       </div>
-      <div>
-        <paper-tabs selected="{{__editOrPreviewSelection}}">
-          <paper-tab>Edit</paper-tab>
-          <paper-tab>Preview</paper-tab>
-        </paper-tabs>
-        <iron-pages selected="[[__editOrPreviewSelection]]">
-          <node-editor node="{{selectedNode}}"
-                       data="[[data]]"
-                       keys="[[keys]]"></node-editor>
-          <node-view node="[[selectedNode]]" preview></node-view>
-        </iron-pages>
+      <div view="nodeeditor">
+        <node-editor id="nodeeditor" node="{{__selectedNode}}"></node-editor>
+      </div>
+      <div view="variableeditor">
+        <variable-editor id="variableeditor" variable="{{__selectedVariable}}"></variable-editor>
       </div>
     </iron-pages>
 
@@ -81,10 +91,20 @@
             notify: true
           },
 
-          selectedNode: {
+          variables: {
             type: Object,
             notify: true,
-            value: null
+            value: function () { return {} }
+          },
+
+          __selectedNode: {
+            type: Object,
+            notify: true
+          },
+
+          __selectedVariable: {
+            type: Object,
+            notify: true
           },
 
           __nextKey: {
@@ -95,27 +115,68 @@
           __editOrPreviewSelection: {
             type: Number,
             value: 0
+          },
+
+          __currentView: {
+            type: String,
+            value: 'empty'
           }
         };
       }
 
       __addNode() {
         const id = this.__nextKey++;
-        var key = 'key' + id;
+        var key = 'node' + id;
         this.set('data.' + key,
           {
             name: 'Node_' + id,
             content: []
           }
         );
+        this.__selectNodeByKey(key);
+      }
+
+      __selectNodeByKey(key) {
+        const node = this.data[key];
+        this.unlinkPaths('__selectedNode');
+        this.__selectedNode = node;
+        this.linkPaths('__selectedNode', 'data.' + key);
+        this.set('__currentView', 'nodeeditor');
+        this.$.variablelist.clearSelection();
+      }
+
+      __onNodeSelect(event) {
+        const key = event.detail.item.key;
+        this.__selectNodeByKey(key);
+      }
+
+      __addVariable() {
+        const id = this.__nextKey++;
+        var key = 'var' + id;
+        this.set('variables.' + key,
+          {
+            name: 'Variable ' + id,
+          }
+        );
+        this.__selectVariableByKey(key);
+      }
+
+      __selectVariableByKey(key) {
+        const variable = this.variables[key];
+        this.unlinkPaths('__selectedVariable');
+        this.__selectedVariable = variable;
+        this.linkPaths('__selectedVariable', 'variables.' + key);
+        this.set('__currentView', 'variableeditor');
+        this.$.nodelist.clearSelection();
+      }
+
+      __onVariableSelect(event) {
+        const key = event.detail.item.key;
+        this.__selectVariableByKey(key);
       }
 
       __play() {
         this.dispatchEvent(new CustomEvent('play'));
-      }
-
-      __determineIronPageSelection(selectedNode) {
-        return selectedNode ? 1 : 0;
       }
 
       __isNodeSetEmpty(dataChangeRecord) {

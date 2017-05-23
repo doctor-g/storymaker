@@ -1,0 +1,47 @@
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">
+<link rel="import"
+      href="../../bower_components/paper-input/paper-input.html">
+
+<dom-module id="variable-editor">
+    <template>
+        <style>
+             :host {
+                display: block;
+            }
+        </style>
+
+        <paper-input label="Name" always-float-label value="{{variable.name}}"></paper-input>
+
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class VariableEditor extends Polymer.Element {
+            static get is() { return 'variable-editor'; }
+            static get properties() {
+                return {
+                    variable: {
+                        type: Object,
+                        notify: true
+                    }
+                };
+            }
+
+            __computePreviewClass(preview) {
+                return preview ? 'preview' : '';
+            }
+
+            __jump(event) {
+                if (!this.preview) {
+                    this.dispatchEvent(new CustomEvent('jump', { detail: { jump: event.target.jump } }));
+                }
+            }
+        }
+
+        window.customElements.define(VariableEditor.is, VariableEditor);
+    </script>
+</dom-module>

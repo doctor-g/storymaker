@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>storymaker-app test</title>
+
+    <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../bower_components/web-component-tester/browser.js"></script>
+    <script src="../../bower_components/iron-test-helpers/mock-interactions.js"></script>
+
+    <link rel="import"
+          href="../../src/keyed-list/keyed-list.html">
+</head>
+
+<body>
+
+    <test-fixture id="BasicTestFixture">
+        <template>
+            <keyed-list></keyed-list>
+        </template>
+    </test-fixture>
+
+    <script>
+        describe('keyed-list', function () {
+
+            var element;
+
+            beforeEach(function (done) {
+                element = fixture('BasicTestFixture');
+                element.data = {
+                    'key0': 'value0'
+                };
+                flush(done);
+            });
+
+            it('initially has no selection', function () {
+                expect(element.selectedValue).to.be.undefined;
+            })
+
+            it('selects the tapped item', function () {
+                selectFirstItem();
+                expect(element.selectedValue).to.equal('value0');
+            });
+
+            function selectFirstItem() {
+                const firstItem = element.shadowRoot.querySelector('paper-item');
+                MockInteractions.tap(firstItem);
+            }
+
+            it('clears the selection when commanded', function() {
+                selectFirstItem();
+                element.clearSelection();
+                expect(element.selectedValue).to.not.be.ok;
+            });
+
+        });
+    </script>
+
+
+</body>
+
+</html>

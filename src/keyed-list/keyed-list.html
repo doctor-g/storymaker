@@ -1,0 +1,74 @@
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">
+<link rel="import"
+      href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import"
+      href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import"
+      href="../../bower_components/paper-item/paper-item.html">
+
+<link rel="import"
+      href="../object-key-mapping/object-key-mapping.html">
+
+
+
+<dom-module id="keyed-list">
+    <template>
+        <style>
+             :host {
+                display: block;
+            }
+        </style>
+
+        <object-key-mapping data="[[data]]" keys="{{__keys}}"></object-key-mapping>
+
+        <paper-listbox id="listbox" on-iron-select="__onIronSelect">
+            <template is="dom-repeat"
+                      items="[[__keys]]"
+                      as="key">
+                <paper-item key="[[key]]"
+                            value="[[__lookup(key)]]">
+                    [[__lookupName(data.*,key)]]
+                </paper-item>
+            </template>
+        </paper-listbox>
+    </template>
+
+    <script>
+        class KeyedList extends Polymer.Element {
+            static get is() { return 'keyed-list'; }
+            static get properties() {
+                return {
+                    data: Object,
+                    __keys: {
+                        type: Array
+                    },
+                    selectedValue: {
+                        type: Object,
+                        notify: true,
+                        readOnly: true
+                    }
+                };
+            }
+
+            __lookup(key) {
+                return this.data[key];
+            }
+
+            __lookupName(dataChangeRecord, key) {
+                return dataChangeRecord.base[key].name;
+            }
+
+            __onIronSelect(event) {
+                this._setSelectedValue(event.detail.item.value);
+            }
+
+            clearSelection() {
+                this._setSelectedValue(null);
+                this.$.listbox.selected = null;
+            }
+        }
+
+        window.customElements.define(KeyedList.is, KeyedList);
+    </script>
+</dom-module>

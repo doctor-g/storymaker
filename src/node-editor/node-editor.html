@@ -17,10 +17,17 @@
 <link rel="import"
       href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import"
+      href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import"
       href="../../bower_components/paper-input/paper-textarea.html">
 
 <!-- Ensure Web Animations polyfill is loaded since neon-animation 2.0 doesn't import it -->
-<link rel="import" href="../../bower_components/neon-animation/web-animations.html">
+<link rel="import"
+      href="../../bower_components/neon-animation/web-animations.html">
+
+
+<link rel="import"
+      href="../node-view/node-view.html">
 
 
 <dom-module id="node-editor">
@@ -31,49 +38,65 @@
       }
     </style>
 
-    <paper-input label="Name"
-                 always-float-label
-                 value="{{node.name}}"
-                 on-change="__nameChanged"></paper-input>
-    <div id="buttonbar">
-      <paper-button raised
-                    on-tap="_addTextContent">Add Text</paper-button>
-      <paper-button raised
-                    on-tap="_addJumpButton">Add Jump</paper-button>
-    </div>
+    <paper-tabs selected="{{__editOrPreviewSelection}}"
+                attr-for-selected="mode">
+      <paper-tab mode="edit">Edit</paper-tab>
+      <paper-tab mode="preview">Preview</paper-tab>
+    </paper-tabs>
 
-    <template is="dom-repeat"
-              items="{{node.content}}">
-
-      <iron-pages selected="[[item.type]]"
-                  attr-for-selected="type">
-        <paper-textarea type="text"
-                        value="{{item.value}}"
-                        label="Text"
-                        always-float-label></paper-textarea>
-        <div type="jump">
-          <paper-input label="Button text"
-                       always-float-label
-                       value="{{item.text}}"></paper-input>
-          <paper-dropdown-menu label="Target Node"
-                               always-float-label>
-            <!-- Use event to set selection so we can ensure it's the string, not the index -->
-            <paper-listbox slot="dropdown-content"
-                           selected="[[item.target]]" 
-                           fallback-selection="0"
-                           on-iron-select="__onJumpTargetSelect"
-                           content="{{item}}">
-              <template is="dom-repeat"
-                        items="[[keys]]"
-                        as="key">
-                <paper-item key="[[key]]">[[__lookupNameOfNode(data,key)]]</paper-item>
-              </template>
-            </paper-listbox>
-          </paper-dropdown-menu>
+    <iron-pages selected="[[__editOrPreviewSelection]]"
+                attr-for-selected="mode">
+      <div mode="edit">
+        <paper-input label="Name"
+                     always-float-label
+                     value="{{node.name}}"
+                     on-change="__nameChanged"></paper-input>
+        <div id="buttonbar">
+          <paper-button raised
+                        on-tap="_addTextContent">Add Text</paper-button>
+          <paper-button raised
+                        on-tap="_addJumpButton">Add Jump</paper-button>
         </div>
-      </iron-pages>
 
-    </template>
+        <template is="dom-repeat"
+                  items="{{node.content}}">
+
+          <iron-pages selected="[[item.type]]"
+                      attr-for-selected="type">
+            <paper-textarea type="text"
+                            value="{{item.value}}"
+                            label="Text"
+                            always-float-label></paper-textarea>
+            <div type="jump">
+              <paper-input label="Button text"
+                           always-float-label
+                           value="{{item.text}}"></paper-input>
+              <paper-dropdown-menu label="Target Node"
+                                   always-float-label>
+                <!-- Use event to set selection so we can ensure it's the string, not the index -->
+                <paper-listbox slot="dropdown-content"
+                               selected="[[item.target]]"
+                               fallback-selection="0"
+                               on-iron-select="__onJumpTargetSelect"
+                               content="{{item}}">
+                  <template is="dom-repeat"
+                            items="[[keys]]"
+                            as="key">
+                    <paper-item key="[[key]]">[[__lookupNameOfNode(data,key)]]</paper-item>
+                  </template>
+                </paper-listbox>
+              </paper-dropdown-menu>
+            </div>
+          </iron-pages>
+        </template>
+      </div>
+
+      <div mode="preview">
+        <node-view node="[[node]]"
+                   preview></node-view>
+      </div>
+
+    </iron-pages>
   </template>
 
   <script>
@@ -96,6 +119,11 @@
           node: {
             type: Object,
             notify: true
+          },
+
+          __editOrPreviewSelection: {
+            type: String,
+            value: 'edit'
           }
         };
       }
