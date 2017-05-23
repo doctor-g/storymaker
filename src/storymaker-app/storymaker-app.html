@@ -34,7 +34,8 @@
 
     <paper-button raised
                   on-tap="__addNode">Add Node</paper-button>
-    <node-list data="[[data]]" keys="[[keys]]"
+    <node-list data="[[data]]"
+               keys="[[keys]]"
                selected-node="{{selectedNode}}"></node-list>
     <iron-pages selected="[[__determineIronPageSelection(selectedNode)]]">
       <div>

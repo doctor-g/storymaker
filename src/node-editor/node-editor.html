@@ -30,7 +30,7 @@
 
     <paper-input label="Name"
                  always-float-label
-                 value="{{node.name}}"></paper-input>
+                 value="{{node.name}}" on-change="__nameChanged"></paper-input>
     <div id="buttonbar">
       <paper-button raised
                     on-tap="_addTextContent">Add Text</paper-button>
@@ -77,8 +77,14 @@
       static get is() { return 'node-editor'; }
       static get properties() {
         return {
+          // The complete game data.
+          // This is provided so that we can look up the names of nodes.
           data: Object,
+          // The keys to the 'data' object.
+          // This is provided from outside for performance reasons, so there
+          // is only ever one copy of the array.
           keys: Array,
+          // The node being edited
           node: {
             type: Object,
             notify: true
@@ -107,6 +113,10 @@
 
       __lookupNameOfNode(data, key) {
         return data[key].name;
+      }
+
+      __nameChanged(e) {
+        this.notifyPath('node');
       }
 
     }

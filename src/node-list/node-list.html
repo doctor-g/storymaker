@@ -22,12 +22,10 @@
                 as="key">
         <paper-item key="[[key]]"
                     value="[[__lookup(key)]]">
-          [[__lookupName(key)]]
+          [[__lookupName(data.*,key)]]
         </paper-item>
       </template>
     </paper-listbox>
-
-
   </template>
 
   <script>
@@ -39,12 +37,8 @@
       static get is() { return 'node-list'; }
       static get properties() {
         return {
-          data: {
-            type: Object,
-          },
-          keys: {
-            type: Array
-          },
+          data: Object,
+          keys: Array,
           selectedNode: {
             type: Object,
             notify: true,
@@ -70,8 +64,8 @@
         return this.data[key];
       }
 
-      __lookupName(key) {
-        return this.data[key].name;
+      __lookupName(dataChangeRecord,key) {
+        return dataChangeRecord.base[key].name;
       }
 
       __selectNode(key) {
