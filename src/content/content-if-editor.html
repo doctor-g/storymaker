@@ -1,0 +1,88 @@
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">
+<link rel="import"
+      href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import"
+      href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import"
+      href="../../bower_components/paper-item/paper-item.html">
+<link rel="import"
+      href="../../bower_components/paper-input/paper-input.html">
+<link rel="import"
+      href="../../bower_components/paper-listbox/paper-listbox.html">
+
+<link rel="import"
+      href="content-editor.html">
+
+<dom-module id="content-if-editor">
+    <template>
+        <style>
+             :host {
+                display: block;
+            }
+            content-editor {
+                margin-left: 12px;
+            }
+        </style>
+
+        <paper-dropdown-menu label="Variable"
+                             always-float-label>
+            <paper-listbox attr-for-selected="key"
+                           slot="dropdown-content"
+                           selected="{{content.variable}}">
+                <template is="dom-repeat"
+                          items="[[__keys]]"
+                          as="key">
+                    <paper-item key="[[key]]">[[__lookupNameFor(variables, key)]]</paper-item>
+                </template>
+            </paper-listbox>
+        </paper-dropdown-menu>
+
+       <paper-dropdown-menu label="Comparator" always-float-label>
+           <paper-listbox slot="dropdown-content" attr-for-selected="code" selected="{{content.condition}}">
+               <paper-item code="=">=</paper-item>
+               <paper-item code="!=">!=</paper-item>
+           </paper-listbox>
+       </paper-dropdown-menu>
+
+        <paper-input label="Value"
+                     always-float-label
+                     value="{{content.value}}"></paper-input>
+
+        <content-editor content="{{content.content}}"
+                        variables="[[variables]]"
+                        nodes="[[nodes]]">
+        </content-editor>
+
+    </template>
+
+    <script>
+        class ContentIfEditor extends Polymer.Element {
+            static get is() { return 'content-if-editor'; }
+            static get properties() {
+                return {
+                    content: {
+                        type: Object,
+                        notify: true
+                    },
+                    nodes: Object,
+                    variables: Object,
+                    __keys: {
+                        type: Array,
+                        computed: '__computeKeys(variables)'
+                    }
+                };
+            }
+
+            __computeKeys(variables) {
+                return Object.keys(variables);
+            }
+
+            __lookupNameFor(variables, key) {
+                return variables[key].name;
+            }
+        }
+
+        window.customElements.define(ContentIfEditor.is, ContentIfEditor);
+    </script>
+</dom-module>

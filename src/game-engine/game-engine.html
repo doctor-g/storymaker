@@ -42,7 +42,9 @@
         </paper-menu-button>
 
         <node-view node="[[node]]"
-                   on-jump="__onJump"></node-view>
+                   on-jump="__onJump"
+                   variables="[[variables]]"
+                   state="{{state}}"></node-view>
     </template>
 
     <script>
@@ -57,14 +59,37 @@
                     data: {
                         type: Object,
                     },
+                    variables: {
+                        type: Object
+                    },
                     node: {
                         type: Object
+                    },
+                    state: {
+                        type: Object,
                     }
                 };
             }
 
             __onJump(e) {
                 this.node = this.data[e.detail.jump];
+            }
+
+            start() {
+                this.state = this.__configureBaseState(this.variables);
+            }
+
+            __configureBaseState(variables) {
+                var stateVariables = {};
+                const varkeys = Object.keys(variables);
+                for (var i = 0; i < varkeys.length; i++) {
+                    const key = varkeys[i];
+                    stateVariables[key] = variables[varkeys].default;
+                }
+                const result = {
+                    variables: stateVariables
+                };
+                return result;
             }
         }
 

@@ -34,7 +34,7 @@
                            attr-for-selected="key"
                            selected="{{content.target}}">
                 <template is="dom-repeat"
-                          items="[[keys]]"
+                          items="[[__keys]]"
                           as="key">
                     <paper-item key="[[key]]">[[__lookupNameOfNode(nodes,key)]]</paper-item>
                 </template>
@@ -48,12 +48,19 @@
             static get properties() {
                 return {
                     nodes: Object,
-                    keys: Array,
+                    __keys: {
+                        type: Array,
+                        computed: '__extractKeys(nodes)'
+                    },
                     content: {
                         type: Object,
                         notify: true
                     }
                 };
+            }
+
+            __extractKeys(nodes) {
+                return Object.keys(nodes);
             }
 
             __lookupNameOfNode(nodes, key) {

@@ -19,9 +19,15 @@
       }
     </style>
 
-    <iron-pages selected="[[__selected]]" attr-for-selected="id">
-      <game-editor id="editor" data="{{data}}" on-play="__onPlay"></game-editor>
-      <game-engine id="engine" data="[[data]]"></game-engine>
+    <iron-pages selected="[[__selected]]"
+                attr-for-selected="id">
+      <game-editor id="editor"
+                   data="{{data}}"
+                   variables="{{variables}}"
+                   on-play="__onPlay"></game-editor>
+      <game-engine id="engine"
+                   data="[[data]]"
+                   variables="[[variables]]"></game-engine>
     </iron-pages>
 
   </template>
@@ -40,6 +46,11 @@
             notify: true,
             value: function () { return {} },
           },
+          variables: {
+            type: Object,
+            notify: true,
+            value: function () { return {} }
+          },
           __selected: {
             type: String,
             value: "editor"
@@ -50,6 +61,7 @@
       __onPlay() {
         this.$.engine.node = this.data[Object.keys(this.data)[0]];
         this.__selected = "engine";
+        this.$.engine.start();
       }
     }
 

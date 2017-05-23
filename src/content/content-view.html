@@ -1,0 +1,81 @@
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">
+<link rel="import"
+      href="../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import"
+      href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import"
+      href="../../bower_components/iron-pages/iron-pages.html">
+
+<link rel="import"
+      href="content-button-view.html">
+<link rel="import"
+      href="content-if-view.html">
+<link rel="import"
+      href="content-text-view.html">
+
+
+<dom-module id="content-view">
+    <template>
+        <style>
+             :host {
+                display: block;
+            }
+
+            .preview>content-button-view:active:after {
+                content: ' (Preview, no jumping)'
+            }
+        </style>
+        <template is="dom-repeat"
+                  items="[[content]]">
+            <template is="dom-if"
+                      if="[[__isType('text', item.type)]]">
+                <content-text-view content="[[item]]"></content-text-view>
+            </template>
+            <template is="dom-if"
+                      if="[[__isType('jump', item.type)]]">
+                <content-button-view content="[[item]]"
+                                     on-tap="__jump"></content-button-view>
+            </template>
+            <template is="dom-if"
+                      if="[[__isType('if', item.type)]]">
+                <content-if-view content="[[item]]"
+                                 variables="[[variables]]"
+                                 state="{{state}}"
+                                 preview="[[preview]]"></content-if-view>
+            </template>
+        </template>
+    </template>
+
+    <script>
+        class ContentView extends Polymer.Element {
+            static get is() { return 'content-view'; }
+            static get properties() {
+                return {
+                    content: Array,
+                    variables: Object,
+                    state: {
+                        type: Object,
+                        notify: true
+                    },
+                    preview: {
+                        type: Boolean,
+                        value: false
+                    }
+                };
+            }
+
+            __isType(type, value) {
+                return type == value;
+            }
+
+            __jump(event) {
+                if (!this.preview) {
+                    this.dispatchEvent(new CustomEvent('jump', { detail: { jump: event.target.jump } }));
+                }
+            }
+        }
+
+        window.customElements.define(ContentView.is, ContentView);
+    </script>
+</dom-module>

@@ -1,0 +1,87 @@
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">
+<link rel="import"
+      href="../../bower_components/paper-checkbox/paper-checkbox.html">
+
+<link rel="import"
+      href="content-view.html">
+
+<dom-module id="content-if-view">
+    <template>
+        <style>
+             :host {
+                display: block;
+            }
+        </style>
+
+        <div hidden$="[[!preview]]">
+            <paper-checkbox checked="{{__checked}}">
+                Simulate [[__getVarName(content.variable,variables)]][[content.condition]][[content.value]]
+            </paper-checkbox>
+            <div hidden$="[[!__checked]]">
+                <content-view content="[[content.content]]"
+                              variables="[[variables]]"
+                              preview></content-view>
+            </div>
+        </div>
+
+        <div hidden$="[[preview]]">
+            <div hidden$="[[!__isConditionTrue(content.variable,content.condition,content.value, state, preview)]]">
+                <content-view content="[[content.content]]"
+                              variables="[[variables]]">
+                </content-view>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        class ContentIfView extends Polymer.Element {
+            static get is() { return 'content-if-view'; }
+            static get properties() {
+                return {
+                    content: Object,
+                    variables: Object,
+                    state: {
+                        type: Object,
+                        notify: true,
+                    },
+                    preview: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __checked: {
+                        type: Boolean,
+                        value: true
+                    }
+                };
+            }
+
+            __getVarName(key, variables) {
+                return variables[key].name;
+            }
+
+            __isConditionTrue(key, condition, value, state, preview) {
+                // Short circuit if we're in preview mode.
+                if (preview || !state) {
+                    return true;
+                }
+                
+                var result;
+                var statevalue = state.variables[key];
+
+                switch (condition) {
+                    case '=':
+                        result = statevalue == value;
+                        break;
+                    case '!=':
+                        result = statevalue != value;
+                        break;
+                }
+                console.log(key, ' as ', statevalue, ' ', condition, ' ', value, ' is ', result);
+                return result;
+            }
+        }
+
+        window.customElements.define(ContentIfView.is, ContentIfView);
+    </script>
+</dom-module>

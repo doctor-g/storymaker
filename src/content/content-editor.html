@@ -1,2 +1,96 @@
-<link rel="import" href="content-button-editor.html">
-<link rel="import" href="content-text-editor.html">
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">
+<link rel="import"
+      href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import"
+      href="../../bower_components/paper-button/paper-button.html">
+
+<link rel="import"
+      href="content-button-editor.html">
+<link rel="import"
+      href="content-if-editor.html">
+<link rel="import"
+      href="content-text-editor.html">
+
+<dom-module id="content-editor">
+    <template>
+        <style>
+             :host {
+                display: block;
+            }
+        </style>
+        <div id="buttonbar">
+            <paper-button raised
+                          on-tap="_addTextContent">Add Text</paper-button>
+            <paper-button raised
+                          on-tap="_addJumpButton">Add Jump</paper-button>
+            <paper-button raised
+                          on-tap="_addIf">Add If</paper-button>
+        </div>
+
+        <template is="dom-repeat"
+                  items="{{content}}">
+            <iron-pages selected="[[item.type]]"
+                        attr-for-selected="type">
+                <content-text-editor type="text"
+                                     content="{{item}}"></content-text-editor>
+                <content-button-editor type="jump"
+                                       content="{{item}}"
+                                       nodes="[[nodes]]"></content-button-editor>
+                <content-if-editor type="if"
+                                   content="{{item}}"
+                                   nodes="[[nodes]]"
+                                   variables="[[variables]]"></content-if-editor>
+            </iron-pages>
+        </template>
+    </template>
+
+    <script>
+        class ContentEditor extends Polymer.Element {
+            static get is() { return 'content-editor'; }
+            static get properties() {
+                return {
+                    content: {
+                        type: Array,
+                        notify: true
+                    },
+                    nodes: Object,
+                    variables: Object
+                };
+            }
+
+            _addTextContent() {
+                this.push('content',
+                    {
+                        type: 'text',
+                        value: ''
+                    }
+                );
+            }
+
+            _addJumpButton() {
+                const firstNodeKey = Object.keys(this.nodes)[0];
+                this.push('content',
+                    {
+                        type: 'jump',
+                        text: '',
+                        target: firstNodeKey
+                    })
+            }
+
+            _addIf() {
+                const firstVarKey = Object.keys(this.variables)[0];
+                this.push('content',
+                    {
+                        type: 'if',
+                        condition: '=',
+                        variable: firstVarKey,
+                        value: '0',
+                        content: []
+                    });
+            }
+        }
+
+        window.customElements.define(ContentEditor.is, ContentEditor);
+    </script>
+</dom-module>

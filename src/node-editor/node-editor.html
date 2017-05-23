@@ -50,30 +50,13 @@
                      always-float-label
                      value="{{node.name}}"
                      on-change="__nameChanged"></paper-input>
-        <div id="buttonbar">
-          <paper-button raised
-                        on-tap="_addTextContent">Add Text</paper-button>
-          <paper-button raised
-                        on-tap="_addJumpButton">Add Jump</paper-button>
-        </div>
-
-        <template is="dom-repeat"
-                  items="{{node.content}}">
-
-          <iron-pages selected="[[item.type]]"
-                      attr-for-selected="type">
-            <content-text-editor type="text"
-                                 content="{{item}}"></content-text-editor>
-            <content-button-editor type="jump"
-                                   content="{{item}}"
-                                   nodes="[[data]]"
-                                   keys="[[keys]]"></content-button-editor>
-          </iron-pages>
-        </template>
+        <content-editor content="{{node.content}}"
+                        nodes="[[data]]"
+                        variables="[[variables]]"></content-editor>
       </div>
-
       <div mode="preview">
         <node-view node="[[node]]"
+                   variables="[[variables]]"
                    preview></node-view>
       </div>
 
@@ -102,6 +85,8 @@
             notify: true
           },
 
+          variables: Object,
+
           __editOrPreviewSelection: {
             type: String,
             value: 'edit'
@@ -109,31 +94,12 @@
         };
       }
 
-      _addTextContent() {
-        this.push('node.content',
-          {
-            type: 'text',
-            value: ''
-          }
-        );
-      }
-
-      _addJumpButton() {
-        const firstNodeKey = Object.keys(this.data)[0];
-        this.push('node.content',
-          {
-            type: 'jump',
-            text: '',
-            target: firstNodeKey
-          })
-      }
-
       __lookupNameOfNode(data, key) {
         return data[key].name;
       }
 
       __nameChanged(e) {
-        this.notifyPath('node');
+        this.notifyPath('node.name');
       }
 
       __onJumpTargetSelect(e) {

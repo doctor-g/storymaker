@@ -8,7 +8,7 @@
       href="../../bower_components/paper-button/paper-button.html">
 
 <link rel="import"
-      href="../content/content.html">
+      href="../content/content-view.html">
 
 <dom-module id="node-view">
     <template>
@@ -16,25 +16,14 @@
              :host {
                 display: block;
             }
-
-            .preview>content-button-view:active:after {
-                content: ' (Preview, no jumping)'
-            }
         </style>
 
-        <template is="dom-repeat"
-                  items="[[node.content]]">
-            <iron-pages attr-for-selected="type"
-                        selected="[[item.type]]"
-                        class$="[[__computePreviewClass(preview)]]">
-                <content-text-view type="text"
-                                   content="[[item]]"></content-text-view>
-                <content-button-view type="jump"
-                                     content="[[item]]"
-                                     on-tap="__jump"></content-button-view>
-            </iron-pages>
-        </template>
-
+        <content-view class$="[[__computePreviewClass(preview)]]"
+                      content="[[node.content]]"
+                      variables="[[variables]]"
+                      state="{{state}}"
+                      preview="[[preview]]">
+        </content-view>
     </template>
 
     <script>
@@ -47,6 +36,11 @@
             static get properties() {
                 return {
                     node: Object,
+                    variables: Object,
+                    state: {
+                        type: Object,
+                        notify: true
+                    },
                     preview: {
                         type: Boolean,
                         value: false
@@ -56,12 +50,6 @@
 
             __computePreviewClass(preview) {
                 return preview ? 'preview' : '';
-            }
-
-            __jump(event) {
-                if (!this.preview) {
-                    this.dispatchEvent(new CustomEvent('jump', { detail: { jump: event.target.jump } }));
-                }
             }
         }
 
