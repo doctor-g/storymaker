@@ -1,0 +1,86 @@
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">
+<link rel="import"
+      href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">     
+<link rel="import"
+      href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import"
+      href="../../bower_components/paper-button/paper-button.html">
+<link rel="import"
+      href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import"
+      href="../../bower_components/paper-item/paper-item.html">
+<link rel="import"
+      href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import"
+      href="../../bower_components/paper-menu-button/paper-menu-button.html">
+
+<dom-module id="game-engine">
+    <template>
+        <style>
+             :host {
+                display: block;
+            }
+            #dropdown {
+                position: fixed;
+                top: 0;
+                right: 0;
+                z-index: 1;
+            }
+        </style>
+
+        <paper-menu-button id="dropdown">
+            <paper-icon-button icon="icons:menu"
+                               slot="dropdown-trigger"></paper-icon-button>
+            <paper-listbox slot="dropdown-content">
+                <paper-item>Return to editor</paper-item>
+            </paper-listbox>
+        </paper-menu-button>
+
+        <template is="dom-repeat"
+                  items="[[node.content]]">
+            <iron-pages selected="[[item.type]]"
+                        attr-for-selected="type">
+                <p type="text">[[item.value]]</p>
+                <paper-button type="jump"
+                              jump="[[item.target]]"
+                              raised
+                              on-tap="__jump">[[item.text]]</paper-button>
+            </iron-pages>
+        </template>
+
+
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class GameEngine extends Polymer.Element {
+            static get is() { return 'game-engine'; }
+            static get properties() {
+                return {
+                    data: {
+                        type: Object,
+                    },
+                    node: {
+                        type: Object
+                    }
+                };
+            }
+
+            __extractKeys(data) {
+                return Object.keys(data);
+            }
+
+            __jump(e) {
+                const button = e.target;
+                this.node = this.data[button.jump];
+            }
+        }
+
+        window.customElements.define(GameEngine.is, GameEngine);
+    </script>
+</dom-module>

@@ -19,6 +19,9 @@
 <link rel="import"
       href="../../bower_components/paper-input/paper-textarea.html">
 
+<!-- Ensure Web Animations polyfill is loaded since neon-animation 2.0 doesn't import it -->
+<link rel="import" href="../../bower_components/neon-animation/web-animations.html">
+
 
 <dom-module id="node-editor">
   <template>
@@ -30,7 +33,8 @@
 
     <paper-input label="Name"
                  always-float-label
-                 value="{{node.name}}" on-change="__nameChanged"></paper-input>
+                 value="{{node.name}}"
+                 on-change="__nameChanged"></paper-input>
     <div id="buttonbar">
       <paper-button raised
                     on-tap="_addTextContent">Add Text</paper-button>
@@ -53,12 +57,16 @@
                        value="{{item.text}}"></paper-input>
           <paper-dropdown-menu label="Target Node"
                                always-float-label>
+            <!-- Use event to set selection so we can ensure it's the string, not the index -->
             <paper-listbox slot="dropdown-content"
-                           selected="{{item.target}}"
-                           fallback-selection="0">
+                           selected="[[item.target]]" 
+                           fallback-selection="0"
+                           on-iron-select="__onJumpTargetSelect"
+                           content="{{item}}">
               <template is="dom-repeat"
-                        items="[[keys]]">
-                <paper-item>[[__lookupNameOfNode(data,item)]]</paper-item>
+                        items="[[keys]]"
+                        as="key">
+                <paper-item key="[[key]]">[[__lookupNameOfNode(data,key)]]</paper-item>
               </template>
             </paper-listbox>
           </paper-dropdown-menu>
@@ -117,6 +125,12 @@
 
       __nameChanged(e) {
         this.notifyPath('node');
+      }
+
+      __onJumpTargetSelect(e) {
+        const listbox = e.target;
+        const item = e.target.selectedItem;
+        listbox.content.target = item.key;
       }
 
     }
