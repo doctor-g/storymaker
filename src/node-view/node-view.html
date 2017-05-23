@@ -1,0 +1,70 @@
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">
+<link rel="import"
+      href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import"
+      href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import"
+      href="../../bower_components/paper-button/paper-button.html">
+
+
+<dom-module id="node-view">
+    <template>
+        <style>
+             :host {
+                display: block;
+            }
+
+            .preview > paper-button:active:after  {
+                content: ' (Preview!)'
+            }
+        </style>
+
+        <template is="dom-repeat"
+                  items="[[node.content]]">
+            <iron-pages attr-for-selected="type"
+                        selected="[[item.type]]" 
+                        class$="[[__computePreviewClass(preview)]]">
+                <p type="text">[[item.value]]</p>
+                <paper-button type="jump"
+                              raised
+                              on-tap="__jump"
+                              jump="[[item.target]]">
+                    [[item.text]]
+                </paper-button>
+            </iron-pages>
+        </template>
+
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class NodeView extends Polymer.Element {
+            static get is() { return 'node-view'; }
+            static get properties() {
+                return {
+                    node: Object,
+                    preview: {
+                        type: Boolean,
+                        value: false
+                    }
+                };
+            }
+
+            __computePreviewClass(preview) {
+                return preview ? 'preview' : '';
+            }
+
+            __jump(event) {
+                if (!this.preview) {
+                    this.dispatchEvent(new CustomEvent('jump', { detail: { jump: event.target.jump } }));
+                }
+            }
+        }
+
+        window.customElements.define(NodeView.is, NodeView);
+    </script>
+</dom-module>

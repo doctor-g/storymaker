@@ -10,9 +10,9 @@
 <link rel="import"
       href="../node-editor/node-editor.html">
 <link rel="import"
-      href="../node-preview/node-preview.html">
-<link rel="import"
       href="../node-list/node-list.html">
+<link rel="import"
+      href="../node-view/node-view.html">
 <link rel="import"
       href="../object-key-mapping/object-key-mapping.html">
 
@@ -54,7 +54,7 @@
           <node-editor node="{{selectedNode}}"
                        data="[[data]]"
                        keys="[[keys]]"></node-editor>
-          <node-preview node="[[selectedNode]]"></node-preview>
+          <node-view node="[[selectedNode]]" preview></node-view>
         </iron-pages>
       </div>
     </iron-pages>

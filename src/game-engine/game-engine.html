@@ -5,8 +5,6 @@
 <link rel="import"
       href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import"
-      href="../../bower_components/paper-button/paper-button.html">
-<link rel="import"
       href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import"
       href="../../bower_components/paper-item/paper-item.html">
@@ -17,7 +15,8 @@
 
 <link rel="import"
       href="../icons/icons.html">
-
+<link rel="import"
+      href="../node-view/node-view.html">
 
 <dom-module id="game-engine">
     <template>
@@ -42,19 +41,8 @@
             </paper-listbox>
         </paper-menu-button>
 
-        <template is="dom-repeat"
-                  items="[[node.content]]">
-            <iron-pages selected="[[item.type]]"
-                        attr-for-selected="type">
-                <p type="text">[[item.value]]</p>
-                <paper-button type="jump"
-                              jump="[[item.target]]"
-                              raised
-                              on-tap="__jump">[[item.text]]</paper-button>
-            </iron-pages>
-        </template>
-
-
+        <node-view node="[[node]]"
+                   on-jump="__onJump"></node-view>
     </template>
 
     <script>
@@ -75,13 +63,8 @@
                 };
             }
 
-            __extractKeys(data) {
-                return Object.keys(data);
-            }
-
-            __jump(e) {
-                const button = e.target;
-                this.node = this.data[button.jump];
+            __onJump(e) {
+                this.node = this.data[e.detail.jump];
             }
         }
 
