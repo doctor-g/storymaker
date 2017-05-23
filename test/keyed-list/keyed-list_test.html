@@ -36,27 +36,6 @@
                 };
                 flush(done);
             });
-
-            it('initially has no selection', function () {
-                expect(element.selectedValue).to.be.undefined;
-            })
-
-            it('selects the tapped item', function () {
-                selectFirstItem();
-                expect(element.selectedValue).to.equal('value0');
-            });
-
-            function selectFirstItem() {
-                const firstItem = element.shadowRoot.querySelector('paper-item');
-                MockInteractions.tap(firstItem);
-            }
-
-            it('clears the selection when commanded', function() {
-                selectFirstItem();
-                element.clearSelection();
-                expect(element.selectedValue).to.not.be.ok;
-            });
-
         });
     </script>
 

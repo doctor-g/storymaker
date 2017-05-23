@@ -24,6 +24,7 @@
                             keys="{{__keys}}"></object-key-mapping>
 
         <paper-listbox id="listbox"
+                       selected="{{selectedKey}}"
                        attr-for-selected="key">
             <template is="dom-repeat"
                       items="[[__keys]]"
@@ -43,16 +44,17 @@
                     data: Object,
                     __keys: {
                         type: Array
+                    },
+                    // Key of the selected item
+                    selectedKey: {
+                        type: String,
+                        notify: true
                     }
                 };
             }
 
             __lookupName(dataChangeRecord, key) {
                 return dataChangeRecord.base[key].name;
-            }
-
-            clearSelection() {
-                this.$.listbox.selected = null;
             }
         }
 

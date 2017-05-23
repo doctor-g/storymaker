@@ -133,7 +133,7 @@
             content: []
           }
         );
-        this.__selectNodeByKey(key);
+        this.$.nodelist.selectedKey = key;
       }
 
       __selectNodeByKey(key) {
@@ -142,7 +142,7 @@
         this.__selectedNode = node;
         this.linkPaths('__selectedNode', 'data.' + key);
         this.set('__currentView', 'nodeeditor');
-        this.$.variablelist.clearSelection();
+        this.$.variablelist.selectedKey = null;
       }
 
       __onNodeSelect(event) {
@@ -158,7 +158,7 @@
             name: 'Variable ' + id,
           }
         );
-        this.__selectVariableByKey(key);
+        this.$.variablelist.selectedKey = key;
       }
 
       __selectVariableByKey(key) {
@@ -167,7 +167,7 @@
         this.__selectedVariable = variable;
         this.linkPaths('__selectedVariable', 'variables.' + key);
         this.set('__currentView', 'variableeditor');
-        this.$.nodelist.clearSelection();
+        this.$.nodelist.selectedKey = null;
       }
 
       __onVariableSelect(event) {
