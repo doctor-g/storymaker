@@ -36,7 +36,7 @@
                 <template is="dom-repeat"
                           items="[[__keys]]"
                           as="key">
-                    <paper-item key="[[key]]">[[__lookupNameOfNode(nodes,key)]]</paper-item>
+                    <paper-item key="[[key]]">[[__lookupNameOfNode(game.nodes,key)]]</paper-item>
                 </template>
             </paper-listbox>
         </paper-dropdown-menu>
@@ -47,10 +47,10 @@
             static get is() { return 'content-button-editor'; }
             static get properties() {
                 return {
-                    nodes: Object,
+                    game: Object,
                     __keys: {
                         type: Array,
-                        computed: '__extractKeys(nodes)'
+                        computed: '__extractKeys(game.nodes)'
                     },
                     content: {
                         type: Object,

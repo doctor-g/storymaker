@@ -36,11 +36,10 @@
                                      content="{{item}}"></content-text-editor>
                 <content-button-editor type="jump"
                                        content="{{item}}"
-                                       nodes="[[nodes]]"></content-button-editor>
+                                       game="[[game]]"></content-button-editor>
                 <content-if-editor type="if"
                                    content="{{item}}"
-                                   nodes="[[nodes]]"
-                                   variables="[[variables]]"></content-if-editor>
+                                   game="[[game]]"></content-if-editor>
             </iron-pages>
         </template>
     </template>
@@ -54,8 +53,7 @@
                         type: Array,
                         notify: true
                     },
-                    nodes: Object,
-                    variables: Object
+                    game: Object
                 };
             }
 
@@ -69,7 +67,7 @@
             }
 
             _addJumpButton() {
-                const firstNodeKey = Object.keys(this.nodes)[0];
+                const firstNodeKey = Object.keys(this.game.nodes)[0];
                 this.push('content',
                     {
                         type: 'jump',
@@ -79,7 +77,7 @@
             }
 
             _addIf() {
-                const firstVarKey = Object.keys(this.variables)[0];
+                const firstVarKey = Object.keys(this.game.variables)[0];
                 this.push('content',
                     {
                         type: 'if',

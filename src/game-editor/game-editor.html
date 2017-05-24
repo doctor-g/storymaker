@@ -14,12 +14,7 @@
 <link rel="import"
       href="../node-view/node-view.html">
 <link rel="import"
-      href="../object-key-mapping/object-key-mapping.html">
-<link rel="import"
       href="../variable-editor/variable-editor.html">
-
-
-
 
 <dom-module id="game-editor">
   <template>
@@ -34,9 +29,6 @@
       }
     </style>
 
-    <object-key-mapping data="[[data]]"
-                        keys="{{keys}}"></object-key-mapping>
-
     <paper-button raised
                   on-tap="__addNode">Add Node</paper-button>
     <paper-button raised
@@ -47,12 +39,12 @@
 
     <keyed-list id="nodelist"
                 class="list"
-                data="[[data]]"
+                data="[[game.nodes]]"
                 on-iron-select="__onNodeSelect">
     </keyed-list>
     <keyed-list id="variablelist"
                 class="list"
-                data="[[variables]]"
+                data="[[game.variables]]"
                 on-iron-select="__onVariableSelect">
     </keyed-list>
 
@@ -62,10 +54,13 @@
         Empty game. Start adding stuff!
       </div>
       <div view="nodeeditor">
-        <node-editor id="nodeeditor" node="{{__selectedNode}}" data="[[data]]" keys="[[keys]]" variables="[[variables]]"></node-editor>
+        <node-editor id="nodeeditor"
+                     node="{{__selectedNode}}"
+                     game="[[game]]"></node-editor>
       </div>
       <div view="variableeditor">
-        <variable-editor id="variableeditor" variable="{{__selectedVariable}}"></variable-editor>
+        <variable-editor id="variableeditor"
+                         variable="{{__selectedVariable}}"></variable-editor>
       </div>
     </iron-pages>
 
@@ -80,19 +75,9 @@
       static get is() { return 'game-editor'; }
       static get properties() {
         return {
-          data: {
+          game: {
             type: Object,
-            notify: true,
-          },
-
-          keys: {
-            type: Array,
             notify: true
-          },
-
-          variables: {
-            type: Object,
-            notify: true,
           },
 
           __selectedNode: {
@@ -125,7 +110,7 @@
       __addNode() {
         const id = this.__nextKey++;
         var key = 'node' + id;
-        this.set('data.' + key,
+        this.set('game.nodes.' + key,
           {
             name: 'Node_' + id,
             content: []
@@ -135,10 +120,10 @@
       }
 
       __selectNodeByKey(key) {
-        const node = this.data[key];
+        const node = this.game.nodes[key];
         this.unlinkPaths('__selectedNode');
         this.__selectedNode = node;
-        this.linkPaths('__selectedNode', 'data.' + key);
+        this.linkPaths('__selectedNode', 'game.nodes.' + key);
         this.set('__currentView', 'nodeeditor');
         this.$.variablelist.selectedKey = null;
       }
@@ -151,7 +136,7 @@
       __addVariable() {
         const id = this.__nextKey++;
         var key = 'var' + id;
-        this.set('variables.' + key,
+        this.set('game.variables.' + key,
           {
             name: 'Variable ' + id,
           }
@@ -160,10 +145,10 @@
       }
 
       __selectVariableByKey(key) {
-        const variable = this.variables[key];
+        const variable = this.game.variables[key];
         this.unlinkPaths('__selectedVariable');
         this.__selectedVariable = variable;
-        this.linkPaths('__selectedVariable', 'variables.' + key);
+        this.linkPaths('__selectedVariable', 'game.variables.' + key);
         this.set('__currentView', 'variableeditor');
         this.$.nodelist.selectedKey = null;
       }

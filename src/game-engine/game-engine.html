@@ -43,7 +43,7 @@
 
         <node-view node="[[node]]"
                    on-jump="__onJump"
-                   variables="[[variables]]"
+                   game="[[game]]"
                    state="{{state}}"></node-view>
     </template>
 
@@ -56,10 +56,7 @@
             static get is() { return 'game-engine'; }
             static get properties() {
                 return {
-                    data: {
-                        type: Object,
-                    },
-                    variables: {
+                    game: {
                         type: Object
                     },
                     node: {
@@ -72,11 +69,13 @@
             }
 
             __onJump(e) {
-                this.node = this.data[e.detail.jump];
+                console.log('jumping to ', e.detail.jump);
+                console.log('which is ', this.game.nodes[e.detail.jump]);
+                this.node = this.game.nodes[e.detail.jump];
             }
 
             start() {
-                this.state = this.__configureBaseState(this.variables);
+                this.state = this.__configureBaseState(this.game.variables);
             }
 
             __configureBaseState(variables) {

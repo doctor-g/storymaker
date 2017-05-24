@@ -33,7 +33,7 @@
                 <template is="dom-repeat"
                           items="[[__keys]]"
                           as="key">
-                    <paper-item key="[[key]]">[[__lookupNameFor(variables, key)]]</paper-item>
+                    <paper-item key="[[key]]">[[__lookupNameFor(game.variables, key)]]</paper-item>
                 </template>
             </paper-listbox>
         </paper-dropdown-menu>
@@ -50,8 +50,7 @@
                      value="{{content.value}}"></paper-input>
 
         <content-editor content="{{content.content}}"
-                        variables="[[variables]]"
-                        nodes="[[nodes]]">
+                        game="[[game]]">
         </content-editor>
 
     </template>
@@ -65,8 +64,7 @@
                         type: Object,
                         notify: true
                     },
-                    nodes: Object,
-                    variables: Object,
+                    game: Object,
                     __keys: {
                         type: Array,
                         computed: '__computeKeys(variables)'

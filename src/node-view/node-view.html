@@ -20,23 +20,19 @@
 
         <content-view class$="[[__computePreviewClass(preview)]]"
                       content="[[node.content]]"
-                      variables="[[variables]]"
+                      game="[[game]]"
                       state="{{state}}"
                       preview="[[preview]]">
         </content-view>
     </template>
 
     <script>
-        /**
-         * @customElement
-         * @polymer
-         */
         class NodeView extends Polymer.Element {
             static get is() { return 'node-view'; }
             static get properties() {
                 return {
                     node: Object,
-                    variables: Object,
+                    game: Object,
                     state: {
                         type: Object,
                         notify: true

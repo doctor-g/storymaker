@@ -30,16 +30,6 @@
                     }
                 };
             }
-
-            __computePreviewClass(preview) {
-                return preview ? 'preview' : '';
-            }
-
-            __jump(event) {
-                if (!this.preview) {
-                    this.dispatchEvent(new CustomEvent('jump', { detail: { jump: event.target.jump } }));
-                }
-            }
         }
 
         window.customElements.define(VariableEditor.is, VariableEditor);

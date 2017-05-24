@@ -21,10 +21,6 @@
              :host {
                 display: block;
             }
-
-            .preview>content-button-view:active:after {
-                content: ' (Preview, no jumping)'
-            }
         </style>
         <template is="dom-repeat"
                   items="[[content]]">
@@ -34,13 +30,12 @@
             </template>
             <template is="dom-if"
                       if="[[__isType('jump', item.type)]]">
-                <content-button-view content="[[item]]"
-                                     on-tap="__jump"></content-button-view>
+                <content-button-view content="[[item]]" preview="[[preview]]"></content-button-view>
             </template>
             <template is="dom-if"
                       if="[[__isType('if', item.type)]]">
                 <content-if-view content="[[item]]"
-                                 variables="[[variables]]"
+                                 game="[[game]]"
                                  state="{{state}}"
                                  preview="[[preview]]"></content-if-view>
             </template>
@@ -53,7 +48,7 @@
             static get properties() {
                 return {
                     content: Array,
-                    variables: Object,
+                    game: Object,
                     state: {
                         type: Object,
                         notify: true
@@ -67,12 +62,6 @@
 
             __isType(type, value) {
                 return type == value;
-            }
-
-            __jump(event) {
-                if (!this.preview) {
-                    this.dispatchEvent(new CustomEvent('jump', { detail: { jump: event.target.jump } }));
-                }
             }
         }
 

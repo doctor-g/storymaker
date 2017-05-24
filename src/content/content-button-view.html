@@ -9,8 +9,11 @@
              :host {
                 display: block;
             }
+            .preview:active:after {
+                content: ' (Preview, no jumping)'
+            }
         </style>
-        <paper-button raised>[[content.text]]</paper-button>
+        <paper-button class$="[[__computePreviewClass(preview)]]" raised on-tap="__jump">[[content.text]]</paper-button>
     </template>
 
     <script>
@@ -21,9 +24,26 @@
                     content: {
                         type: Object,
                         notify: true
+                    },
+                    preview: {
+                        type: Boolean,
+                        value: false
                     }
                 };
             }
+
+             __jump(event) {
+                if (!this.preview) {
+                    console.log('target will be set to ', this.content.target);
+                    this.dispatchEvent(new CustomEvent('jump', { bubbles:true, composed: true, detail: { jump: this.content.target } }));
+                }
+            }
+
+
+            __computePreviewClass(preview) {
+                return preview ? 'preview' : '';
+            }
+
         }
 
         window.customElements.define(ContentButtonView.is, ContentButtonView);

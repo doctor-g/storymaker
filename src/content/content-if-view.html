@@ -16,11 +16,11 @@
 
         <div hidden$="[[!preview]]">
             <paper-checkbox checked="{{__checked}}">
-                Simulate [[__getVarName(content.variable,variables)]][[content.condition]][[content.value]]
+                Simulate [[__getVarName(content.variable,game.variables)]][[content.condition]][[content.value]]
             </paper-checkbox>
             <div hidden$="[[!__checked]]">
                 <content-view content="[[content.content]]"
-                              variables="[[variables]]"
+                              game="[[game]]"
                               preview></content-view>
             </div>
         </div>
@@ -28,7 +28,7 @@
         <div hidden$="[[preview]]">
             <div hidden$="[[!__isConditionTrue(content.variable,content.condition,content.value, state, preview)]]">
                 <content-view content="[[content.content]]"
-                              variables="[[variables]]">
+                              game="[[game]]">
                 </content-view>
             </div>
         </div>
@@ -40,7 +40,7 @@
             static get properties() {
                 return {
                     content: Object,
-                    variables: Object,
+                    game: Object,
                     state: {
                         type: Object,
                         notify: true,
@@ -65,7 +65,7 @@
                 if (preview || !state) {
                     return true;
                 }
-                
+
                 var result;
                 var statevalue = state.variables[key];
 

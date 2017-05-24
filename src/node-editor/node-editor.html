@@ -49,14 +49,15 @@
         <paper-input label="Name"
                      always-float-label
                      value="{{node.name}}"
-                     on-change="__nameChanged"></paper-input>
+                     on-change="__nameChanged">
+        </paper-input>
         <content-editor content="{{node.content}}"
-                        nodes="[[data]]"
-                        variables="[[variables]]"></content-editor>
+                        game="[[game]]">
+        </content-editor>
       </div>
       <div mode="preview">
         <node-view node="[[node]]"
-                   variables="[[variables]]"
+                   game="[[game]]"
                    preview></node-view>
       </div>
 
@@ -72,20 +73,11 @@
       static get is() { return 'node-editor'; }
       static get properties() {
         return {
-          // The complete game data.
-          // This is provided so that we can look up the names of nodes.
-          data: Object,
-          // The keys to the 'data' object.
-          // This is provided from outside for performance reasons, so there
-          // is only ever one copy of the array.
-          keys: Array,
-          // The node being edited
           node: {
             type: Object,
             notify: true
           },
-
-          variables: Object,
+          game: Object,
 
           __editOrPreviewSelection: {
             type: String,
