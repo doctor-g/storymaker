@@ -33,12 +33,12 @@
             <iron-pages selected="[[item.type]]"
                         attr-for-selected="type">
                 <content-text-editor type="text"
-                                     content="{{item}}"></content-text-editor>
+                                     item="{{item}}"></content-text-editor>
                 <content-button-editor type="jump"
-                                       content="{{item}}"
+                                       item="{{item}}"
                                        game="[[game]]"></content-button-editor>
                 <content-if-editor type="if"
-                                   content="{{item}}"
+                                   item="{{item}}"
                                    game="[[game]]"></content-if-editor>
             </iron-pages>
         </template>

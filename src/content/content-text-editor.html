@@ -10,7 +10,7 @@
                 display: block;
             }
         </style>
-        <paper-textarea value="{{content.value}}"
+        <paper-textarea value="{{item.value}}"
                         label="Text"
                         always-float-label>
         </paper-textarea>
@@ -21,7 +21,7 @@
             static get is() { return 'content-text-editor'; }
             static get properties() {
                 return {
-                    content: {
+                    item: {
                         type: Object,
                         notify: true
                     }

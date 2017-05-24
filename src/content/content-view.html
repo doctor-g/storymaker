@@ -26,15 +26,15 @@
                   items="[[content]]">
             <template is="dom-if"
                       if="[[__isType('text', item.type)]]">
-                <content-text-view content="[[item]]"></content-text-view>
+                <content-text-view item="[[item]]"></content-text-view>
             </template>
             <template is="dom-if"
                       if="[[__isType('jump', item.type)]]">
-                <content-button-view content="[[item]]" preview="[[preview]]"></content-button-view>
+                <content-button-view item="[[item]]" preview="[[preview]]"></content-button-view>
             </template>
             <template is="dom-if"
                       if="[[__isType('if', item.type)]]">
-                <content-if-view content="[[item]]"
+                <content-if-view item="[[item]]"
                                  game="[[game]]"
                                  state="{{state}}"
                                  preview="[[preview]]"></content-if-view>

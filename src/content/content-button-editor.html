@@ -25,14 +25,14 @@
         </style>
         <paper-input label="Button text"
                      always-float-label
-                     value="{{content.text}}"></paper-input>
+                     value="{{item.text}}"></paper-input>
         <paper-dropdown-menu label="Target Node"
                              always-float-label>
             <!-- Use event to set selection so we can ensure it's the string, not the index -->
             <paper-listbox id="listbox"
                            slot="dropdown-content"
                            attr-for-selected="key"
-                           selected="{{content.target}}">
+                           selected="{{item.target}}">
                 <template is="dom-repeat"
                           items="[[__keys]]"
                           as="key">
@@ -47,14 +47,14 @@
             static get is() { return 'content-button-editor'; }
             static get properties() {
                 return {
+                    item: {
+                        type: Object,
+                        notify: true
+                    },
                     game: Object,
                     __keys: {
                         type: Array,
                         computed: '__extractKeys(game.nodes)'
-                    },
-                    content: {
-                        type: Object,
-                        notify: true
                     }
                 };
             }

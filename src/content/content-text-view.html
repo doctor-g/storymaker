@@ -8,7 +8,7 @@
         display: block;
       }
     </style>
-    <p>[[content.value]]</p>
+    <p>[[item.value]]</p>
   </template>
 
   <script>
@@ -20,7 +20,7 @@
       static get is() { return 'content-text-view'; }
       static get properties() {
         return {
-          content: Object
+          item: Object
         };
       }
     }

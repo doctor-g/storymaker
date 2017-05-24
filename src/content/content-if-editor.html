@@ -29,7 +29,7 @@
                              always-float-label>
             <paper-listbox attr-for-selected="key"
                            slot="dropdown-content"
-                           selected="{{content.variable}}">
+                           selected="{{item.variable}}">
                 <template is="dom-repeat"
                           items="[[__keys]]"
                           as="key">
@@ -39,7 +39,7 @@
         </paper-dropdown-menu>
 
        <paper-dropdown-menu label="Comparator" always-float-label>
-           <paper-listbox slot="dropdown-content" attr-for-selected="code" selected="{{content.condition}}">
+           <paper-listbox slot="dropdown-content" attr-for-selected="code" selected="{{item.condition}}">
                <paper-item code="=">=</paper-item>
                <paper-item code="!=">!=</paper-item>
            </paper-listbox>
@@ -47,9 +47,9 @@
 
         <paper-input label="Value"
                      always-float-label
-                     value="{{content.value}}"></paper-input>
+                     value="{{item.value}}"></paper-input>
 
-        <content-editor content="{{content.content}}"
+        <content-editor content="{{item.content}}"
                         game="[[game]]">
         </content-editor>
 
@@ -60,7 +60,7 @@
             static get is() { return 'content-if-editor'; }
             static get properties() {
                 return {
-                    content: {
+                    item: {
                         type: Object,
                         notify: true
                     },

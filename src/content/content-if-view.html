@@ -16,18 +16,18 @@
 
         <div hidden$="[[!preview]]">
             <paper-checkbox checked="{{__checked}}">
-                Simulate [[__getVarName(content.variable,game.variables)]][[content.condition]][[content.value]]
+                Simulate [[__getVarName(item.variable,game.variables)]][[item.condition]][[item.value]]
             </paper-checkbox>
             <div hidden$="[[!__checked]]">
-                <content-view content="[[content.content]]"
+                <content-view content="[[item.content]]"
                               game="[[game]]"
                               preview></content-view>
             </div>
         </div>
 
         <div hidden$="[[preview]]">
-            <div hidden$="[[!__isConditionTrue(content.variable,content.condition,content.value, state, preview)]]">
-                <content-view content="[[content.content]]"
+            <div hidden$="[[!__isConditionTrue(item.variable,item.condition,item.value, state, preview)]]">
+                <content-view content="[[item.content]]"
                               game="[[game]]">
                 </content-view>
             </div>
@@ -39,7 +39,7 @@
             static get is() { return 'content-if-view'; }
             static get properties() {
                 return {
-                    content: Object,
+                    item: Object,
                     game: Object,
                     state: {
                         type: Object,
