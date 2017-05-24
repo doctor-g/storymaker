@@ -23,7 +23,7 @@
             <paper-button raised
                           on-tap="_addTextContent">Add Text</paper-button>
             <paper-button raised
-                          on-tap="_addJumpButton">Add Jump</paper-button>
+                          on-tap="_addButton">Add Button</paper-button>
             <paper-button raised
                           on-tap="_addIf"
                           disabled$="[[!__areThereVariables(game.variables)]]">Add If</paper-button>
@@ -35,7 +35,7 @@
                         attr-for-selected="type">
                 <content-text-editor type="text"
                                      item="{{item}}"></content-text-editor>
-                <content-button-editor type="jump"
+                <content-button-editor type="button"
                                        item="{{item}}"
                                        game="[[game]]"></content-button-editor>
                 <content-if-editor type="if"
@@ -67,13 +67,12 @@
                 );
             }
 
-            _addJumpButton() {
-                const firstNodeKey = Object.keys(this.game.nodes)[0];
+            _addButton() {
                 this.push('content',
                     {
-                        type: 'jump',
+                        type: 'button',
                         text: '',
-                        target: firstNodeKey
+                        actions: []
                     })
             }
 

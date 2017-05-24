@@ -3,6 +3,10 @@
 <link rel="import"
       href="../../bower_components/polymer/lib/elements/dom-repeat.html">
 <link rel="import"
+      href="../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import"
+      href="../../bower_components/paper-button/paper-button.html">
+<link rel="import"
       href="../../bower_components/paper-input/paper-input.html">
 <link rel="import"
       href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
@@ -26,20 +30,52 @@
         <paper-input label="Button text"
                      always-float-label
                      value="{{item.text}}"></paper-input>
-        <paper-dropdown-menu label="Target Node"
-                             always-float-label>
-            <!-- Use event to set selection so we can ensure it's the string, not the index -->
-            <paper-listbox id="listbox"
-                           slot="dropdown-content"
-                           attr-for-selected="key"
-                           selected="{{item.target}}">
-                <template is="dom-repeat"
-                          items="[[__keys]]"
-                          as="key">
-                    <paper-item key="[[key]]">[[__lookupNameOfNode(game.nodes,key)]]</paper-item>
-                </template>
-            </paper-listbox>
-        </paper-dropdown-menu>
+
+        <paper-button raised
+                      on-tap="__addJumpAction">Add Jump Action</paper-button>
+        <paper-button raised
+                      on-tap="__addSetVariableAction"
+                      disabled$="[[!__areThereVariables(game.variables)]]">Add Set Variable Action</paper-button>
+
+        <template is="dom-repeat"
+                  items="{{item.actions}}">
+
+            <template is="dom-if"
+                      if="[[__is('jump', item.type)]]">
+                <paper-dropdown-menu label="Target Node"
+                                     always-float-label>
+                    <!-- Use event to set selection so we can ensure it's the string, not the index -->
+                    <paper-listbox slot="dropdown-content"
+                                   attr-for-selected="key"
+                                   selected="{{item.target}}">
+                        <template is="dom-repeat"
+                                  items="[[__extractKeys(game.nodes)]]"
+                                  as="key">
+                            <paper-item key="[[key]]">[[__lookupName(game.nodes,key)]]</paper-item>
+                        </template>
+                    </paper-listbox>
+                </paper-dropdown-menu>
+            </template>
+
+            <template is="dom-if"
+                      if="[[__is('set', item.type)]]">
+                <paper-dropdown-menu label="Variable"
+                                     always-float-label>
+                    <paper-listbox slot="dropdown-content"
+                                   attr-for-selected="key"
+                                   selected="{{item.variable}}">
+                        <template is="dom-repeat"
+                                  items="[[__extractKeys(game.variables)]]"
+                                  as="key">
+                            <paper-item key="[[key]]">[[__lookupName(game.variables,key)]]</paper-item>
+                        </template>
+                    </paper-listbox>
+                </paper-dropdown-menu>
+                <paper-input label="Value"
+                             always-float-label
+                             value="{{item.value}}"></paper-input>
+            </template>
+        </template>
     </template>
 
     <script>
@@ -51,20 +87,41 @@
                         type: Object,
                         notify: true
                     },
-                    game: Object,
-                    __keys: {
-                        type: Array,
-                        computed: '__extractKeys(game.nodes)'
-                    }
+                    game: Object
                 };
             }
 
-            __extractKeys(nodes) {
-                return Object.keys(nodes);
+            __is(type, value) {
+                return type == value;
             }
 
-            __lookupNameOfNode(nodes, key) {
-                return nodes[key].name;
+            __extractKeys(object) {
+                return Object.keys(object);
+            }
+
+            __addJumpAction() {
+                this.push('item.actions',
+                    {
+                        type: 'jump',
+                        target: ''
+                    });
+            }
+
+            __addSetVariableAction() {
+                this.push('item.actions',
+                    {
+                        type: 'set',
+                        variable: '',
+                        value: ''
+                    });
+            }
+
+            __lookupName(object, key) {
+                return object[key].name;
+            }
+
+            __areThereVariables(object) {
+                return Object.keys(object).length > 0;
             }
         }
 

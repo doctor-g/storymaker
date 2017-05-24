@@ -29,8 +29,10 @@
                 <content-text-view item="[[item]]"></content-text-view>
             </template>
             <template is="dom-if"
-                      if="[[__isType('jump', item.type)]]">
-                <content-button-view item="[[item]]" preview="[[preview]]"></content-button-view>
+                      if="[[__isType('button', item.type)]]">
+                <content-button-view item="[[item]]"
+                                     preview="[[preview]]"
+                                     state="{{state}}"></content-button-view>
             </template>
             <template is="dom-if"
                       if="[[__isType('if', item.type)]]">

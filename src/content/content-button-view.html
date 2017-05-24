@@ -11,12 +11,12 @@
             }
 
             .preview:active:after {
-                content: ' (Preview, no jumping)'
+                content: ' (Preview Mode)'
             }
         </style>
         <paper-button class$="[[__computePreviewClass(preview)]]"
                       raised
-                      on-tap="__jump">[[item.text]]</paper-button>
+                      on-tap="__onTap">[[item.text]]</paper-button>
     </template>
 
     <script>
@@ -28,6 +28,10 @@
                         type: Object,
                         notify: true
                     },
+                    state: {
+                        type: Object,
+                        notify: true
+                    },
                     preview: {
                         type: Boolean,
                         value: false
@@ -35,9 +39,32 @@
                 };
             }
 
-            __jump(event) {
+            __onTap(event) {
                 if (!this.preview) {
-                    this.dispatchEvent(new CustomEvent('jump', { bubbles: true, composed: true, detail: { jump: this.item.target } }));
+                    for (var i = 0; i < this.item.actions.length; i++) {
+                        const action = this.item.actions[i];
+                        this.__execute(action);
+                    }
+                }
+            }
+
+            __execute(action) {
+                switch (action.type) {
+                    case 'set':
+                        this.set('state.variables.' + action.variable, action.value);
+                        break;
+                    case 'jump':
+                        this.dispatchEvent(new CustomEvent('jump',
+                            {
+                                bubbles: true,
+                                composed: true,
+                                detail: {
+                                    jump: action.target
+                                }
+                            }));
+                        break;
+                    default:
+                        console.log('UNRECOGNIZED ACTION TYPE: ', action.type);
                 }
             }
 
