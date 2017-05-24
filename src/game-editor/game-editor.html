@@ -90,7 +90,12 @@
             notify: true
           },
 
-          __nextKey: {
+          __nextNodeKey: {
+            type: Number,
+            value: 0
+          },
+
+          __nextVariableKey: {
             type: Number,
             value: 0
           },
@@ -108,7 +113,7 @@
       }
 
       __addNode() {
-        const id = this.__nextKey++;
+        const id = this.__nextNodeKey++;
         var key = 'node' + id;
         this.set('game.nodes.' + key,
           {
@@ -134,7 +139,7 @@
       }
 
       __addVariable() {
-        const id = this.__nextKey++;
+        const id = this.__nextVariableKey++;
         var key = 'var' + id;
         this.set('game.variables.' + key,
           {
