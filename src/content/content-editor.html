@@ -25,7 +25,8 @@
             <paper-button raised
                           on-tap="_addJumpButton">Add Jump</paper-button>
             <paper-button raised
-                          on-tap="_addIf">Add If</paper-button>
+                          on-tap="_addIf"
+                          disabled$="[[!__areThereVariables(game.variables)]]">Add If</paper-button>
         </div>
 
         <template is="dom-repeat"
@@ -86,6 +87,10 @@
                         value: '0',
                         content: []
                     });
+            }
+
+            __areThereVariables(variables) {
+                return Object.keys(variables).length > 0;
             }
         }
 
