@@ -20,6 +20,7 @@
              :host {
                 display: block;
             }
+
             content-editor {
                 margin-left: 12px;
             }
@@ -38,12 +39,15 @@
             </paper-listbox>
         </paper-dropdown-menu>
 
-       <paper-dropdown-menu label="Comparator" always-float-label>
-           <paper-listbox slot="dropdown-content" attr-for-selected="code" selected="{{item.condition}}">
-               <paper-item code="=">=</paper-item>
-               <paper-item code="!=">!=</paper-item>
-           </paper-listbox>
-       </paper-dropdown-menu>
+        <paper-dropdown-menu label="Comparator"
+                             always-float-label>
+            <paper-listbox slot="dropdown-content"
+                           attr-for-selected="code"
+                           selected="{{item.condition}}">
+                <paper-item code="=">=</paper-item>
+                <paper-item code="!=">!=</paper-item>
+            </paper-listbox>
+        </paper-dropdown-menu>
 
         <paper-input label="Value"
                      always-float-label
@@ -77,7 +81,9 @@
             }
 
             __lookupNameFor(variables, key) {
-                return variables[key].name;
+                if (variables) {
+                    return variables[key].name;
+                }
             }
         }
 

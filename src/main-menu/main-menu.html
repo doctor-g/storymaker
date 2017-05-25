@@ -1,5 +1,7 @@
 <link rel="import"
       href="../../bower_components/polymer/polymer-element.html">
+      <link rel="import"
+      href="../../bower_components/polymer/lib/mixins/mutable-data.html">
 <link rel="import"
       href="../../bower_components/polymer/lib/elements/dom-repeat.html">
 <link rel="import"
@@ -22,9 +24,9 @@
         <paper-button raised
                       on-tap="__new">New Story</paper-button>
 
-
+        <!-- Need mutable-data here to see the change to items' names -->
         <template is="dom-repeat"
-                  items="[[games]]">
+                  items="[[games]]" mutable-data>
             <div>
                 [[item.name]]
                 <paper-button raised
@@ -53,7 +55,7 @@
     </template>
 
     <script>
-        class MainMenu extends Polymer.Element {
+        class MainMenu extends Polymer.MutableData(Polymer.Element) {
             static get is() { return 'main-menu'; }
             static get properties() {
                 return {

@@ -1,0 +1,38 @@
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">
+<link rel="import"
+      href="../../bower_components/paper-input/paper-input.html">
+
+<dom-module id="settings-editor">
+    <template>
+        <style>
+             :host {
+                display: block;
+            }
+        </style>
+
+        Story Settings
+
+        <paper-input label="Name"
+                     always-float-label
+                     value="{{story.name}}">
+        </paper-input>
+
+    </template>
+
+    <script>
+        class SettingsEditor extends Polymer.Element {
+            static get is() { return 'settings-editor'; }
+            static get properties() {
+                return {
+                    story: {
+                        type: Object,
+                        notify: true
+                    }
+                };
+            }
+        }
+
+        window.customElements.define(SettingsEditor.is, SettingsEditor);
+    </script>
+</dom-module>

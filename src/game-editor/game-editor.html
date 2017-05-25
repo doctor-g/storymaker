@@ -15,6 +15,9 @@
       href="../node-view/node-view.html">
 <link rel="import"
       href="../variable-editor/variable-editor.html">
+<link rel="import"
+      href="../settings-editor/settings-editor.html">
+
 
 <dom-module id="game-editor">
   <template>
@@ -36,7 +39,10 @@
     <paper-button raised
                   on-tap="__play"
                   disabled="[[__isNodeSetEmpty(data.*)]]">Play</paper-button>
-    <paper-button raised on-tap="__close">Close</paper-button>
+    <paper-button raised
+                  on-tap="__editSettings">Settings</paper-button>
+    <paper-button raised
+                  on-tap="__close">Close</paper-button>
 
     <keyed-list id="nodelist"
                 class="list"
@@ -54,15 +60,16 @@
       <div view="empty">
         Empty game. Start adding stuff!
       </div>
-      <div view="nodeeditor">
-        <node-editor id="nodeeditor"
-                     node="{{__selectedNode}}"
-                     game="[[game]]"></node-editor>
-      </div>
-      <div view="variableeditor">
-        <variable-editor id="variableeditor"
-                         variable="{{__selectedVariable}}"></variable-editor>
-      </div>
+      <settings-editor view="settingseditor"
+                       id="settingseditor"
+                       story="{{game}}"></settings-editor>
+      <node-editor view="nodeeditor"
+                   id="nodeeditor"
+                   node="{{__selectedNode}}"
+                   game="[[game]]"></node-editor>
+      <variable-editor view="variableeditor"
+                       id="variableeditor"
+                       variable="{{__selectedVariable}}"></variable-editor>
     </iron-pages>
 
   </template>
@@ -113,7 +120,7 @@
 
       __getAndIncrement(key) {
         const id = this.game[key];
-        this.set('game.' + key, id+1);
+        this.set('game.' + key, id + 1);
         return id;
       }
 
@@ -140,7 +147,7 @@
           }
         );
         this.$.variablelist.selectedKey = key;
-        this.notifyPath('game.variables'); 
+        this.notifyPath('game.variables');
       }
 
       __selectVariableByKey(key) {
@@ -167,6 +174,15 @@
 
       __close() {
         this.dispatchEvent(new CustomEvent('close'));
+      }
+
+      __editSettings() {
+        this.$.settingseditor.previousView = this.__currentView;
+        this.__currentView = 'settingseditor';
+      }
+
+      __onSettingsClosed() {
+        this.__currentView = this.$.settingseditor.previousView;
       }
     }
 
