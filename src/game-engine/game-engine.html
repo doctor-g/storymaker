@@ -76,6 +76,9 @@
 
             start() {
                 this.state = this.__configureBaseState(this.game.variables);
+                if (this.game.startnode) {
+                    this.node = this.game.nodes[this.game.startnode];
+                }
             }
 
             __configureBaseState(variables) {

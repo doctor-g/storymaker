@@ -90,8 +90,6 @@
       }
 
       __onPlay() {
-        // Default to using first node as the start node. Can be made configurable later.
-        this.$.engine.node = this.game.nodes[Object.keys(this.game.nodes)[0]];
         this.__selected = "engine";
         this.$.engine.start();
       }

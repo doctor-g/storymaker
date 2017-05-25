@@ -3,6 +3,9 @@
 <link rel="import"
       href="../../bower_components/paper-input/paper-input.html">
 
+<link rel="import"
+      href="../keyed-item-dropdown/keyed-item-dropdown.html">
+
 <dom-module id="settings-editor">
     <template>
         <style>
@@ -18,6 +21,10 @@
                      value="{{story.name}}">
         </paper-input>
 
+        <keyed-item-dropdown label="Starting Node"
+                             data="[[story.nodes]]"
+                             selected-key="{{story.startnode}}">
+        </keyed-item-dropdown>
     </template>
 
     <script>
