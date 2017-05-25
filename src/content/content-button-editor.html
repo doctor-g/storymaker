@@ -15,10 +15,8 @@
 <link rel="import"
       href="../../bower_components/paper-item/paper-item.html">
 
-<!-- Ensure Web Animations polyfill is loaded since neon-animation 2.0 doesn't import it -->
 <link rel="import"
-      href="../../bower_components/neon-animation/web-animations.html">
-
+      href="../keyed-item-dropdown/keyed-item-dropdown.html">
 
 <dom-module id="content-button-editor">
     <template>
@@ -42,35 +40,17 @@
 
             <template is="dom-if"
                       if="[[__is('jump', item.type)]]">
-                <paper-dropdown-menu label="Target Node"
-                                     always-float-label>
-                    <!-- Use event to set selection so we can ensure it's the string, not the index -->
-                    <paper-listbox slot="dropdown-content"
-                                   attr-for-selected="key"
-                                   selected="{{item.target}}">
-                        <template is="dom-repeat"
-                                  items="[[__extractKeys(game.nodes)]]"
-                                  as="key">
-                            <paper-item key="[[key]]">[[__lookupName(game.nodes,key)]]</paper-item>
-                        </template>
-                    </paper-listbox>
-                </paper-dropdown-menu>
+                <keyed-item-dropdown label="Target Node"
+                                     selected-key="{{item.target}}"
+                                     data="[[game.nodes]]"></keyed-item-dropdown>
             </template>
 
             <template is="dom-if"
                       if="[[__is('set', item.type)]]">
-                <paper-dropdown-menu label="Variable"
-                                     always-float-label>
-                    <paper-listbox slot="dropdown-content"
-                                   attr-for-selected="key"
-                                   selected="{{item.variable}}">
-                        <template is="dom-repeat"
-                                  items="[[__extractKeys(game.variables)]]"
-                                  as="key">
-                            <paper-item key="[[key]]">[[__lookupName(game.variables,key)]]</paper-item>
-                        </template>
-                    </paper-listbox>
-                </paper-dropdown-menu>
+                <keyed-item-dropdown label="Variable"
+                                     selected-key="{{item.variable}}"
+                                     data="[[game.variables]]">
+                </keyed-item-dropdown>
                 <paper-input label="Value"
                              always-float-label
                              value="{{item.value}}"></paper-input>

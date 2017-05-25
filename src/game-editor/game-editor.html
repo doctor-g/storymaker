@@ -160,6 +160,11 @@
       }
 
       __onVariableSelect(event) {
+        // Need to unselect node so that its editor refreshes on reopen rather than
+        // seeing old version; this fixes the problem where variable name changes aren't seen.
+        this.__selectedNode = null; 
+
+        // Now do the real work.
         const key = event.detail.item.key;
         this.__selectVariableByKey(key);
       }
