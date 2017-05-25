@@ -36,6 +36,7 @@
     <paper-button raised
                   on-tap="__play"
                   disabled="[[__isNodeSetEmpty(data.*)]]">Play</paper-button>
+    <paper-button raised on-tap="__close">Close</paper-button>
 
     <keyed-list id="nodelist"
                 class="list"
@@ -86,16 +87,6 @@
             notify: true
           },
 
-          __nextNodeKey: {
-            type: Number,
-            value: 0
-          },
-
-          __nextVariableKey: {
-            type: Number,
-            value: 0
-          },
-
           __editOrPreviewSelection: {
             type: Number,
             value: 0
@@ -109,15 +100,21 @@
       }
 
       __addNode() {
-        const id = this.__nextNodeKey++;
+        const id = this.__getAndIncrement('nextNodeId');
         var key = 'node' + id;
         this.set('game.nodes.' + key,
           {
-            name: 'Node_' + id,
+            name: 'Node ' + id,
             content: []
           }
         );
         this.$.nodelist.selectedKey = key;
+      }
+
+      __getAndIncrement(key) {
+        const id = this.game[key];
+        this.set('game.' + key, id+1);
+        return id;
       }
 
       __selectNodeByKey(key) {
@@ -135,7 +132,7 @@
       }
 
       __addVariable() {
-        const id = this.__nextVariableKey++;
+        const id = this.__getAndIncrement('nextVariableId');
         var key = 'var' + id;
         this.set('game.variables.' + key,
           {
@@ -166,6 +163,10 @@
 
       __isNodeSetEmpty(dataChangeRecord) {
         return Object.keys(dataChangeRecord.base).length == 0;
+      }
+
+      __close() {
+        this.dispatchEvent(new CustomEvent('close'));
       }
     }
 

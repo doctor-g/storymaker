@@ -1,6 +1,8 @@
 <link rel="import"
       href="../../bower_components/polymer/polymer-element.html">
 <link rel="import"
+      href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import"
       href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import"
       href="../../bower_components/paper-tabs/paper-tabs.html">
@@ -9,6 +11,9 @@
       href="../game-editor/game-editor.html">
 <link rel="import"
       href="../game-engine/game-engine.html">
+<link rel="import"
+      href="../main-menu/main-menu.html">
+
 
 
 <dom-module id="storymaker-app">
@@ -19,11 +24,20 @@
       }
     </style>
 
+    <app-localstorage-document key="local-stories"
+                               data="{{localData}}">
+    </app-localstorage-document>
+
     <iron-pages selected="[[__selected]]"
                 attr-for-selected="id">
+      <main-menu id="menu"
+                 selected="{{game}}"
+                 games="{{localData.games}}"
+                 on-edit="__onEdit"></main-menu>
       <game-editor id="editor"
                    game="{{game}}"
-                   on-play="__onPlay">
+                   on-play="__onPlay"
+                   on-close="__onClose">
       </game-editor>
       <game-engine id="engine"
                    game="[[game]]">
@@ -43,19 +57,36 @@
         return {
           game: {
             type: Object,
+            notify: true
+          },
+          localData: {
+            type: Object,
             notify: true,
             value: function () {
               return {
-                nodes: {},
-                variables: {}
-              };
-            },
+                games: []
+              }
+            }
           },
           __selected: {
             type: String,
-            value: "editor"
+            value: "menu"
           }
         };
+      }
+      static get observers() {
+        return [
+          '__updateLocalDataOnGameChange(game.*)'
+        ]
+      }
+
+      __updateLocalDataOnGameChange(change) {
+        this.notifyPath('localData.games');
+      }
+
+      __onClose() {
+        this.$.menu.selected = null;
+        this.__selected = "menu";
       }
 
       __onPlay() {
@@ -63,6 +94,10 @@
         this.$.engine.node = this.game.nodes[Object.keys(this.game.nodes)[0]];
         this.__selected = "engine";
         this.$.engine.start();
+      }
+
+      __onEdit(event) {
+        this.__selected = "editor";
       }
     }
 

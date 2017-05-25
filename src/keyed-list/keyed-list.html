@@ -54,7 +54,9 @@
             }
 
             __lookupName(dataChangeRecord, key) {
-                return dataChangeRecord.base[key].name;
+                if (dataChangeRecord.base) {
+                    return dataChangeRecord.base[key].name;
+                }
             }
         }
 

@@ -24,6 +24,12 @@
             }
 
             __extractKeys(dataChangeRecord) {
+                // When the game changes, base can be null. Need to handle it here
+                // to prevent bad behavior later on.
+                if (!dataChangeRecord.base) {
+                    return [];
+                }
+
                 // If the path contains on dot, it must be "data.[key]", where "[key]"
                 // is the new key added. If it were a subproperty, it would be something like
                 // "data.[key].[value]".
