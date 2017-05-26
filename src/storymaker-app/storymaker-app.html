@@ -33,6 +33,7 @@
       <main-menu id="menu"
                  selected="{{game}}"
                  games="{{localData.games}}"
+                 on-play="__onPlay"
                  on-edit="__onEdit"></main-menu>
       <game-editor id="editor"
                    game="{{game}}"
@@ -89,7 +90,12 @@
         this.__selected = "menu";
       }
 
-      __onPlay() {
+      __onPlay(event) {
+        // Set the game if it's a parameter to the event, e.g. from main menu event.
+        if (event.detail.game) {
+          this.game = event.detail.game;
+        }
+        // Start the game.
         this.__selected = "engine";
         this.$.engine.start();
       }

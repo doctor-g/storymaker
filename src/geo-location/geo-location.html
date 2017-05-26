@@ -1,0 +1,107 @@
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">  
+
+<dom-module id="geo-location">
+    <script>
+        class GeoLocation extends Polymer.Element {
+            static get is() { return 'geo-location'; }
+            static get properties() {
+                return {
+                    location: {
+                        type: Object,
+                        notify: true
+                    },
+                    highAccuracy: {
+                        type: Boolean,
+                        value: false
+                    },
+                    active: {
+                        type: Boolean,
+                        value: false,
+                        observer: '__activeChanged'
+                    },
+                    __watchId: Number
+                };
+            }
+
+            ready() {
+                super.ready();
+                if (!("geolocation" in navigator)) {
+                    const message = 'Geolocation not supported on this device.';
+                    console.log(message);
+                    this.__dispatchError({ message: message });
+                }
+                // If active comes in as true, it won't trigger the active-changed event
+                // that we use to start watches, so do it manually.
+                if (this.active) {
+                    this.__activeChanged(true);
+                }
+            }
+
+            __dispatchError(detail) {
+                this.dispatchEvent(new CustomEvent('error', { detail: detail }));
+            }
+
+            __activeChanged(active) {
+                const options = {
+                    enableHighAccuracy: this.highAccuracy
+                };
+                if (active) {
+                    navigator.geolocation.getCurrentPosition(this.__updatePosition(), this.__onError(), options);
+                    this.__watchId = navigator.geolocation.watchPosition(this.__onPositionChanged(), this.__onError(), options);
+                } else if (this.__watchId) {
+                    navigator.geolocation.clearWatch(this.__watchId);
+                    this.__watchId = null;
+                }
+            }
+
+            __updatePosition() {
+                const that = this;
+                return function (position) {
+                    that.set('location', {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    });
+                    //that.notifyPath('location');
+                    console.log('in geo-location, location is ', that.location);
+                }
+            }
+
+            __onPositionChanged() {
+                const that = this;
+                return function (position) {
+                    // 'active' can change between the request and the result of this
+                    // asynchronous call, so we have to check to make sure this data is
+                    // still wanted.
+                    if (that.active) {
+                        that.__updatePosition()(position);
+                    }
+                };
+            }
+
+            __onError() {
+                const that = this;
+                return function (error) {
+                    var message;
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            message = "Permission denied";
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            message = "Position unavailable";
+                            break;
+                        case error.TIMEOUT:
+                            message = "Timeout";
+                            break;
+                        case error.UNKNOWN_ERROR:
+                            message = "Unknown error";
+                            break;
+                    }
+                    that.dispatchError({ message: message, code: error.code });
+                }
+            }
+        }
+
+        window.customElements.define(GeoLocation.is, GeoLocation);
+    </script>
+</dom-module>

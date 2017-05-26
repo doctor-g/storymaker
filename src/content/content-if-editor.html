@@ -77,7 +77,9 @@
             }
 
             __computeKeys(variables) {
-                return Object.keys(variables);
+                if (variables) {
+                    return Object.keys(variables);
+                }
             }
 
             __lookupNameFor(variables, key) {

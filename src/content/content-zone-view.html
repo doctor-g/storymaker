@@ -1,0 +1,77 @@
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="content-zone-view">
+    <template>
+        <style>
+             :host {
+                display: block;
+            }
+        </style>
+
+        I am at [[location.latitude]], [[location.longitude]],
+        but there is a party at [[item.latitude]], [[item.longitude]]
+    </template>
+
+    <script>
+        class ContentZoneView extends Polymer.Element {
+            static get is() { return 'content-zone-view'; }
+            static get properties() {
+                return {
+                    item: Object,
+                    latitude: Number,
+                    longitude: Number,
+                    location: {
+                        type: Object
+                    },
+                    
+                    _earthRadius: {
+                        type: Number,
+                        value: 6378137, // meters
+                        readOnly: true
+                    }
+                };
+            }
+            static get observers() {
+                return [
+                    '__checkZones(location, item)'
+                ]
+            }
+
+            __double(v) {
+                return v * 2;
+            }
+
+            __checkZones(location, item) {
+                if (item && location) {
+                    const latitudeDifference = location.latitude - item.latitude;
+                    const longitudeDifference = location.longitude - item.longitude;
+                    const distanceSquared = Math.pow(latitudeDifference, 2) + Math.pow(longitudeDifference, 2);
+                    const radiusInMeters = item.radius;
+                    const radiusInDegrees = this.__computeDistanceInDegrees(radiusInMeters, this._earthRadius);
+                    const radiusSquaredInDegrees = Math.pow(radiusInDegrees, 2);
+
+                    console.log('distanceSquared ', distanceSquared, ' and radiusSquaredInDegrees ', radiusSquaredInDegrees);
+
+                    if (distanceSquared <= radiusSquaredInDegrees) {
+                        this.dispatchEvent(new CustomEvent('jump',
+                            {
+                                bubbles: true,
+                                composed: true,
+                                detail: {
+                                    jump: this.item.target
+                                }
+                            }));
+                    }
+                }
+            }
+
+            __computeDistanceInDegrees(surfaceDistance, earthRadius) {
+                const inRadians = 2 * Math.atan(surfaceDistance / (2 * earthRadius));
+                return inRadians * 180 / Math.PI;
+            }
+        }
+
+        window.customElements.define(ContentZoneView.is, ContentZoneView);
+    </script>
+</dom-module>

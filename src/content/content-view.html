@@ -13,7 +13,8 @@
       href="content-if-view.html">
 <link rel="import"
       href="content-text-view.html">
-
+<link rel="import"
+      href="content-zone-view.html">
 
 <dom-module id="content-view">
     <template>
@@ -41,6 +42,12 @@
                                  state="{{state}}"
                                  preview="[[preview]]"></content-if-view>
             </template>
+            <template is="dom-if"
+                      if="[[__isType('zone', item.type)]]">
+                <content-zone-view item="[[item]]"
+                                   game="[[game]]"
+                                   location="[[location]]"></content-zone-view>
+            </template>
         </template>
     </template>
 
@@ -58,7 +65,8 @@
                     preview: {
                         type: Boolean,
                         value: false
-                    }
+                    },
+                    location: Object
                 };
             }
 

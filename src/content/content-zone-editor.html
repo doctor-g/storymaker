@@ -1,0 +1,100 @@
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">
+<link rel="import"
+      href="../../bower_components/paper-input/paper-input.html">
+<link rel="import"
+      href="../../bower_components/paper-button/paper-button.html">
+
+<link rel="import"
+      href="../geo-location/geo-distance.html">
+<link rel="import"
+      href="../keyed-item-dropdown/keyed-item-dropdown.html">
+
+
+<dom-module id="content-zone-editor">
+    <template>
+        <style>
+             :host {
+                display: block;
+            }
+        </style>
+
+        <paper-input label="[[__labelFor('Latitude', item.latitude)]]"
+                     always-float-label
+                     value="{{item.latitude}}"
+                     disabled="[[__isNull(item.latitude)]]"
+                     type="number"></paper-input>
+        <paper-input label="[[__labelFor('Longitude', item.longitude)]]"
+                     always-float-label
+                     value="{{item.longitude}}"
+                     disabled="[[__isNull(item.longitude)]]"
+                     type="number"></paper-input>
+        <paper-button raised
+                      on-tap="__onUseCurrentLocation">Use Current Location</paper-button>
+        <paper-input label="Radius"
+                     value="{{item.radius}}"
+                     type="number">
+            <div slot="suffix">meters</div>
+        </paper-input>
+        On zone entry, go to node:
+        <keyed-item-dropdown data="[[game.nodes]]" selected-key="{{item.target}}"></keyed-item-dropdown>
+    </template>
+
+    <script>
+        class ContentZoneEditor extends Polymer.Element {
+            static get is() { return 'content-zone-editor'; }
+            static get properties() {
+                return {
+                    item: {
+                        type: Object,
+                        notify: true,
+                        observer: '__itemChanged'
+                    },
+                    game: Object
+                };
+            }
+
+            __labelFor(label, value) {
+                if (value == null) {
+                    return "Initializing " + label;
+                } else {
+                    return label;
+                }
+            }
+
+            __isNull(something) {
+                return something == null;
+            }
+
+            __itemChanged(item) {
+                // Use current location if this is the first time this item is edited.
+                if (item && item.type === "zone" && item.latitude === null) {
+                    this.__setToCurrentLocation();
+                }
+            }
+
+            __setToCurrentLocation() {
+                navigator.geolocation.getCurrentPosition(this.__updatePosition(), function (error) {
+                    console.log('Geolocation error! ', error);
+                }, { enableHighAccuracy: true });
+            }
+
+            __updatePosition() {
+                const that = this;
+                return function (position) {
+                    const coords = position.coords;
+                    that.set('item.latitude', coords.latitude);
+                    that.set('item.longitude', coords.longitude);
+                }
+            }
+
+            __onUseCurrentLocation() {
+                this.set('item.latitude', null);
+                this.set('item.longitude', null);
+                this.__setToCurrentLocation();
+            }
+        }
+
+        window.customElements.define(ContentZoneEditor.is, ContentZoneEditor);
+    </script>
+</dom-module>

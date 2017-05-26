@@ -1,16 +1,12 @@
-<link rel="import"
-      href="../../bower_components/polymer/polymer-element.html">
-<link rel="import"
-      href="../../bower_components/iron-pages/iron-pages.html">
-<link rel="import"
-      href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 
-<link rel="import"
-      href="content-button-editor.html">
-<link rel="import"
-      href="content-if-editor.html">
-<link rel="import"
-      href="content-text-editor.html">
+<link rel="import" href="content-button-editor.html">
+<link rel="import" href="content-if-editor.html">
+<link rel="import" href="content-text-editor.html">
+<link rel="import" href="content-zone-editor.html">
+
 
 <dom-module id="content-editor">
     <template>
@@ -20,27 +16,18 @@
             }
         </style>
         <div id="buttonbar">
-            <paper-button raised
-                          on-tap="_addTextContent">Add Text</paper-button>
-            <paper-button raised
-                          on-tap="_addButton">Add Button</paper-button>
-            <paper-button raised
-                          on-tap="_addIf"
-                          disabled$="[[!__areThereVariables(game.variables)]]">Add If</paper-button>
+            <paper-button raised on-tap="_addTextContent">Add Text</paper-button>
+            <paper-button raised on-tap="_addButton">Add Button</paper-button>
+            <paper-button raised on-tap="_addIf" disabled$="[[!__areThereVariables(game.variables)]]">Add If</paper-button>
+            <paper-button raised on-tap="_addZone">Add Zone</paper-button>
         </div>
 
-        <template is="dom-repeat"
-                  items="{{content}}">
-            <iron-pages selected="[[item.type]]"
-                        attr-for-selected="type">
-                <content-text-editor type="text"
-                                     item="{{item}}"></content-text-editor>
-                <content-button-editor type="button"
-                                       item="{{item}}"
-                                       game="[[game]]"></content-button-editor>
-                <content-if-editor type="if"
-                                   item="{{item}}"
-                                   game="[[game]]"></content-if-editor>
+        <template is="dom-repeat" items="{{content}}">
+            <iron-pages selected="[[item.type]]" attr-for-selected="type">
+                <content-text-editor type="text" item="{{item}}"></content-text-editor>
+                <content-button-editor type="button" item="{{item}}" game="[[game]]"></content-button-editor>
+                <content-if-editor type="if" item="{{item}}" game="[[game]]"></content-if-editor>
+                <content-zone-editor type="zone" item="{{item}}" game="[[game]]"></content-zone-editor>
             </iron-pages>
         </template>
     </template>
@@ -86,6 +73,16 @@
                         value: '0',
                         content: []
                     });
+            }
+
+            _addZone() {
+                this.push('content', 
+                {
+                    type: 'zone',
+                    latitude: null,
+                    longitude: null,
+                    radius: 0,
+                });
             }
 
             __areThereVariables(variables) {

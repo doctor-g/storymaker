@@ -1,6 +1,6 @@
 <link rel="import"
       href="../../bower_components/polymer/polymer-element.html">
-      <link rel="import"
+<link rel="import"
       href="../../bower_components/polymer/lib/mixins/mutable-data.html">
 <link rel="import"
       href="../../bower_components/polymer/lib/elements/dom-repeat.html">
@@ -12,6 +12,9 @@
       href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import"
       href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import"
+      href="../../bower_components/paper-toast/paper-toast.html">
+
 
 <dom-module id="main-menu">
     <template>
@@ -26,7 +29,8 @@
 
         <!-- Need mutable-data here to see the change to items' names -->
         <template is="dom-repeat"
-                  items="[[games]]" mutable-data>
+                  items="[[games]]"
+                  mutable-data>
             <div>
                 [[item.name]]
                 <paper-button raised
@@ -36,21 +40,32 @@
                               on-tap="__delete"
                               game="[[item]]"
                               index="[[index]]">Delete</paper-button>
+                <paper-button raised
+                              on-tap="__log"
+                              game="[[item]]">Log</paper-button>
+                <paper-button raised
+                              on-tap="__play"
+                              game="[[item]]">Play</paper-button>
             </div>
         </template>
+        <paper-toast id="logtoast"
+                     text="Data logged to console"></paper-toast>
 
         <array-selector items="[[games]]"
                         selected="{{selected}}"></array-selector>
 
-        <paper-dialog id="confirm" modal>
+        <paper-dialog id="confirm"
+                      modal>
             <h2>Confirm deletion</h2>
             <paper-dialog-scrollable>
                 Are you sure you wish to delete [[__dialogDisplayName]]? This operation cannot be undone.
             </paper-dialog-scrollable>
             <div>
                 <paper-button dialog-dismiss>Cancel</paper-dialog>
-                <paper-button dialog-confirm autofocus on-tap="__confirmDeletion">OK</paper-button>
-            </div> 
+        <paper-button dialog-confirm
+                      autofocus
+                      on-tap="__confirmDeletion">OK</paper-button>
+        </div>
         </paper-dialog>
     </template>
 
@@ -96,10 +111,19 @@
                 this.$.confirm.opened = true;
             }
 
+            __log(event) {
+                console.log(event.srcElement.game);
+                this.$.logtoast.open();
+            }
+
+            __play(event) {
+                this.dispatchEvent(new CustomEvent('play', { detail: { game: event.srcElement.game } }));
+            }
+
             __confirmDeletion(event) {
                 const index = event.srcElement.gameindex;
                 this.splice('games', index, 1);
-             }
+            }
         }
 
         window.customElements.define(MainMenu.is, MainMenu);

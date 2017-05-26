@@ -1,0 +1,42 @@
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="geo-distance">
+
+    <script>
+        class GeoDistance extends Polymer.Element {
+            static get is() { return 'geo-distance'; }
+            static get properties() {
+                return {
+                    distanceInDegrees: {
+                        type: Number,
+                        computed: '__computeDistanceInDegrees(surfaceDistance,earthRadius)',
+                        notify: true
+                    },
+                    surfaceDistance: {
+                        type: Number,
+                        computed: '__computeSurfaceDistance(distanceInDegrees,earthRadius)',
+                        notify: true,
+                    },
+                    earthRadius: {
+                        type: Number,
+                        value: 6378137 // meters
+                    }
+                };
+            }
+
+            __computeDistanceInDegrees(surfaceDistance,earthRadius) {
+                const inRadians =  2 * Math.atan(surfaceDistance / (2 * earthRadius));
+                return inRadians * 180 / Math.PI;
+            }
+
+            __computeSurfaceDistance(distanceInDegrees,earthRadius) {
+                const distanceInRadians = distanceInDegrees * Math.PI / 180;
+                return 2 * earthRadius * Math.tan(distanceInRadians/2)
+            }
+
+        }
+
+        window.customElements.define(GeoDistance.is, GeoDistance);
+    </script>
+</dom-module>

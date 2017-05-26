@@ -1,16 +1,10 @@
-<link rel="import"
-      href="../../bower_components/polymer/polymer-element.html">
-<link rel="import"
-      href="../../bower_components/polymer/lib/elements/dom-repeat.html">
-<link rel="import"
-      href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import"
-      href="../../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import"
-      href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
 
-<link rel="import"
-      href="../object-key-mapping/object-key-mapping.html">
+<link rel="import" href="../object-key-mapping/object-key-mapping.html">
 
 
 <dom-module id="keyed-item-dropdown">
@@ -21,14 +15,9 @@
             }
         </style>
         <object-key-mapping data="[[data]]" keys="{{__keys}}"></object-key-mapping>
-        <paper-dropdown-menu label="[[label]]"
-                             always-float-label>
-            <paper-listbox slot="dropdown-content"
-                           attr-for-selected="key"
-                           selected="{{selectedKey}}">
-                <template is="dom-repeat"
-                          items="[[__keys]]"
-                          as="key">
+        <paper-dropdown-menu label="[[label]]" always-float-label>
+            <paper-listbox slot="dropdown-content" attr-for-selected="key" selected="{{selectedKey}}">
+                <template is="dom-repeat" items="[[__keys]]" as="key">
                     <paper-item key="[[key]]">[[__lookupName(data,key)]]</paper-item>
                 </template>
             </paper-listbox>
@@ -53,7 +42,9 @@
             }
 
             __lookupName(data, key) {
-                return data[key].name;
+                if (data) {
+                    return data[key].name;
+                }
             }
 
             __extractKeys(object) {
