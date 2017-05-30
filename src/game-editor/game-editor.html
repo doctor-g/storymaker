@@ -58,7 +58,7 @@
     <iron-pages selected="[[__currentView]]"
                 attr-for-selected="view">
       <div view="empty">
-        Empty game. Start adding stuff!
+        Select or create a node
       </div>
       <settings-editor view="settingseditor"
                        id="settingseditor"
@@ -66,10 +66,12 @@
       <node-editor view="nodeeditor"
                    id="nodeeditor"
                    node="{{__selectedNode}}"
-                   game="[[game]]"></node-editor>
+                   game="[[game]]"
+                   on-delete-node="__deleteNode"></node-editor>
       <variable-editor view="variableeditor"
                        id="variableeditor"
-                       variable="{{__selectedVariable}}"></variable-editor>
+                       variable="{{__selectedVariable}}"
+                       on-delete-variable="__deleteVariable"></variable-editor>
     </iron-pages>
 
   </template>
@@ -162,7 +164,7 @@
       __onVariableSelect(event) {
         // Need to unselect node so that its editor refreshes on reopen rather than
         // seeing old version; this fixes the problem where variable name changes aren't seen.
-        this.__selectedNode = null; 
+        this.__selectedNode = null;
 
         // Now do the real work.
         const key = event.detail.item.key;
@@ -188,6 +190,34 @@
 
       __onSettingsClosed() {
         this.__currentView = this.$.settingseditor.previousView;
+      }
+
+      __deleteNode() {
+        const key = this.$.nodelist.selectedKey;
+
+        // Make sure we deselect the current node.
+        this.$.nodelist.selectedKey = null;
+        this.set('__currentView', 'empty');
+
+        // Using 'delete' itself does not work in Polymer 2, so to get around this,
+        // we make a copy with everything except the one we want to eliminate.
+        var copy = JSON.parse(JSON.stringify(this.game.nodes));
+        delete copy[key];
+        this.set('game.nodes', copy);
+      }
+
+      __deleteVariable() {
+        const key = this.$.variablelist.selectedKey;
+  
+        // Make sure we deselect the current variable.
+        this.$.variablelist.selectedKey = null;
+        this.set('__currentView', 'empty');
+
+        // Using 'delete' itself does not work in Polymer 2, so to get around this,
+        // we make a copy with everything except the one we want to eliminate.
+        var copy = JSON.parse(JSON.stringify(this.game.variables));
+        delete copy[key];
+        this.set('game.variables', copy);
       }
     }
 

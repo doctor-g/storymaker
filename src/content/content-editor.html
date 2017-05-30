@@ -179,7 +179,11 @@
             }
 
             __isMoveDownEnabled(index, contentChangeRecord) {
-                return index < contentChangeRecord.base.length - 1;
+                if (contentChangeRecord.base) {
+                    return index < contentChangeRecord.base.length - 1;
+                } else {
+                    return false;
+                }
             }
         }
 

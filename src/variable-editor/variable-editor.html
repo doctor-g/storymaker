@@ -1,18 +1,38 @@
 <link rel="import"
       href="../../bower_components/polymer/polymer-element.html">
 <link rel="import"
+      href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import"
       href="../../bower_components/paper-input/paper-input.html">
 
 <dom-module id="variable-editor">
     <template>
         <style>
              :host {
-                display: block;
+                display: flex;
+            }
+
+            .content {
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+            }
+
+            paper-icon-button {
+                flex-grow: 0;
             }
         </style>
 
-        <paper-input label="Name" always-float-label value="{{variable.name}}"></paper-input>
-        <paper-input label="Default Value" always-float-label value="{{variable.default}}"></paper-input>
+        <div class="content">
+            <paper-input label="Name"
+                         always-float-label
+                         value="{{variable.name}}"></paper-input>
+            <paper-input label="Default Value"
+                         always-float-label
+                         value="{{variable.default}}"></paper-input>
+        </div>
+        <paper-icon-button icon="delete"
+                           on-tap="__onTapDelete"></paper-icon-button>
     </template>
 
     <script>
@@ -29,6 +49,14 @@
                         notify: true
                     }
                 };
+            }
+
+            __onTapDelete() {
+                this.dispatchEvent(new CustomEvent('delete-variable',
+                    {
+                        bubbles: true,
+                        composed: true
+                    }));
             }
         }
 

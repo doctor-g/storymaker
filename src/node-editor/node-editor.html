@@ -11,6 +11,8 @@
 <link rel="import"
       href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import"
+      href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import"
       href="../../bower_components/paper-input/paper-input.html">
 <link rel="import"
       href="../../bower_components/paper-item/paper-item.html">
@@ -35,6 +37,18 @@
        :host {
         display: block;
       }
+
+      .topbox {
+        display: flex;
+      }
+
+      .topbox paper-input {
+        flex-grow: 1;
+      }
+
+      .topbox paper-icon-button {
+        flex-grow: 0;
+      }
     </style>
 
     <paper-tabs selected="{{__editOrPreviewSelection}}"
@@ -46,11 +60,14 @@
     <iron-pages selected="[[__editOrPreviewSelection]]"
                 attr-for-selected="mode">
       <div mode="edit">
-        <paper-input label="Name"
-                     always-float-label
-                     value="{{node.name}}"
-                     on-change="__nameChanged">
-        </paper-input>
+        <div class="topbox">
+          <paper-input label="Name"
+                       value="{{node.name}}"
+                       on-change="__nameChanged">
+          </paper-input>
+          <paper-icon-button icon="delete"
+                             on-tap="__deleteNode"></paper-icon-button>
+        </div>
         <content-editor content="{{node.content}}"
                         game="[[game]]">
         </content-editor>
@@ -98,6 +115,10 @@
         const listbox = e.target;
         const item = e.target.selectedItem;
         listbox.content.target = item.key;
+      }
+
+      __deleteNode() {
+        this.dispatchEvent(new CustomEvent('delete-node'));
       }
 
     }

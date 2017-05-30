@@ -33,9 +33,10 @@
                 // If the path contains on dot, it must be "data.[key]", where "[key]"
                 // is the new key added. If it were a subproperty, it would be something like
                 // "data.[key].[value]".
-                // The first change comes in at path "data", so we have to do <=1, not == 1.
+                // The first change---and deletions---comes in at path "data",
+                // so we have to do <=1, not == 1.
                 if (this.__countDots(dataChangeRecord.path) <= 1) {
-                    var keys = Object.keys(dataChangeRecord.base);
+                    var keys =  Object.keys(dataChangeRecord.base);
                     return keys;
                 }
                 // Otherwise return the cached one

@@ -11,7 +11,6 @@
       href="../object-key-mapping/object-key-mapping.html">
 
 
-
 <dom-module id="keyed-list">
     <template>
         <style>
@@ -42,9 +41,7 @@
             static get properties() {
                 return {
                     data: Object,
-                    __keys: {
-                        type: Array
-                    },
+                    __keys: Array,
                     // Key of the selected item
                     selectedKey: {
                         type: String,
@@ -53,9 +50,15 @@
                 };
             }
 
+
             __lookupName(dataChangeRecord, key) {
                 if (dataChangeRecord.base) {
-                    return dataChangeRecord.base[key].name;
+                    if (!dataChangeRecord.base[key]) {
+                        return 'invalid node selection';
+                    }
+                    else {
+                        return dataChangeRecord.base[key].name;
+                    }
                 }
             }
         }

@@ -43,7 +43,11 @@
 
             __lookupName(data, key) {
                 if (data) {
-                    return data[key].name;
+                    if (data[key]) {
+                        return data[key].name;
+                    } else {
+                        return 'invalid key';
+                    }
                 }
             }
 
