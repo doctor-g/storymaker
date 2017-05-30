@@ -1,11 +1,20 @@
-<link rel="import" href="../../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">
+<link rel="import"
+      href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import"
+      href="../../bower_components/paper-button/paper-button.html">
+<link rel="import"
+      href="../../bower_components/paper-icon-button/paper-icon-button.html">
 
-<link rel="import" href="content-button-editor.html">
-<link rel="import" href="content-if-editor.html">
-<link rel="import" href="content-text-editor.html">
-<link rel="import" href="content-zone-editor.html">
+<link rel="import"
+      href="content-button-editor.html">
+<link rel="import"
+      href="content-if-editor.html">
+<link rel="import"
+      href="content-text-editor.html">
+<link rel="import"
+      href="content-zone-editor.html">
 
 
 <dom-module id="content-editor">
@@ -14,21 +23,76 @@
              :host {
                 display: block;
             }
+
+            .itemcontainer {
+                border: 1px solid black;
+                border-radius: 4px;
+                display: flex;
+            }
+
+            .itemcontainer .main {
+                flex-grow: 1;
+                margin: 4px;
+            }
+
+            .itemcontainer .typelabel {
+                font-style: italic;
+                font-size: 75%;
+                text-transform: capitalize;
+            }
+
+            .itemcontainer .buttons {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+            }
         </style>
         <div id="buttonbar">
-            <paper-button raised on-tap="_addTextContent">Add Text</paper-button>
-            <paper-button raised on-tap="_addButton">Add Button</paper-button>
-            <paper-button raised on-tap="_addIf" disabled$="[[!__areThereVariables(game.variables)]]">Add If</paper-button>
-            <paper-button raised on-tap="_addZone">Add Zone</paper-button>
+            <paper-button raised
+                          on-tap="_addTextContent">Add Text</paper-button>
+            <paper-button raised
+                          on-tap="_addButton">Add Button</paper-button>
+            <paper-button raised
+                          on-tap="_addIf"
+                          disabled$="[[!__areThereVariables(game.variables)]]">Add If</paper-button>
+            <paper-button raised
+                          on-tap="_addZone">Add Zone</paper-button>
         </div>
 
-        <template is="dom-repeat" items="{{content}}">
-            <iron-pages selected="[[item.type]]" attr-for-selected="type">
-                <content-text-editor type="text" item="{{item}}"></content-text-editor>
-                <content-button-editor type="button" item="{{item}}" game="[[game]]"></content-button-editor>
-                <content-if-editor type="if" item="{{item}}" game="[[game]]"></content-if-editor>
-                <content-zone-editor type="zone" item="{{item}}" game="[[game]]"></content-zone-editor>
-            </iron-pages>
+        <template is="dom-repeat"
+                  items="{{content}}">
+            <div class="itemcontainer">
+                <div class="main">
+                    <div class="typelabel">[[item.type]] content</div>
+                    <iron-pages selected="[[item.type]]"
+                                attr-for-selected="type">
+                        <content-text-editor type="text"
+                                             item="{{item}}"></content-text-editor>
+                        <content-button-editor type="button"
+                                               item="{{item}}"
+                                               game="[[game]]"></content-button-editor>
+                        <content-if-editor type="if"
+                                           item="{{item}}"
+                                           game="[[game]]"></content-if-editor>
+                        <content-zone-editor type="zone"
+                                             item="{{item}}"
+                                             game="[[game]]"></content-zone-editor>
+                    </iron-pages>
+                </div>
+                <div class="buttons">
+                    <paper-icon-button icon="arrow-upward"
+                                       on-tap="__shiftUp"
+                                       index="[[index]]"
+                                       disabled$="[[!__isMoveUpEnabled(index)]]"></paper-icon-button>
+                    <paper-icon-button icon="delete"
+                                       index="[[index]]"
+                                       on-tap="__deleteContent"></paper-icon-button>
+                    <paper-icon-button icon="arrow-downward"
+                                       on-tap="__shiftDown"
+                                       index="[[index]]"
+                                       disabled$="[[!__isMoveDownEnabled(index,content.*)]]"></paper-icon-button>
+                </div>
+            </div>
         </template>
     </template>
 
@@ -76,17 +140,46 @@
             }
 
             _addZone() {
-                this.push('content', 
-                {
-                    type: 'zone',
-                    latitude: null,
-                    longitude: null,
-                    radius: 0,
-                });
+                this.push('content',
+                    {
+                        type: 'zone',
+                        latitude: null,
+                        longitude: null,
+                        radius: 0,
+                    });
             }
 
             __areThereVariables(variables) {
                 return variables && Object.keys(variables).length > 0;
+            }
+
+            __deleteContent(event) {
+                const index = event.srcElement.index;
+                this.splice('content', index, 1);
+            }
+
+            __shiftUp(event) {
+                const index = event.srcElement.index;
+                const newIndex = index - 1;
+                this.__shift(index, newIndex);
+            }
+
+            __shift(from, to) {
+                this.splice('content', to, 0, this.splice('content', from, 1)[0]);
+            }
+
+            __shiftDown(event) {
+                const index = event.srcElement.index;
+                const newIndex = index + 1;
+                this.__shift(index, newIndex);
+            }
+
+            __isMoveUpEnabled(index) {
+                return index > 0;
+            }
+
+            __isMoveDownEnabled(index, contentChangeRecord) {
+                return index < contentChangeRecord.base.length - 1;
             }
         }
 

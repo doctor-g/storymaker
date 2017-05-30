@@ -3,6 +3,7 @@
 <link rel="import"
       href="../../bower_components/paper-input/paper-textarea.html">
 
+
 <dom-module id="content-text-editor">
     <template>
         <style>
@@ -10,9 +11,9 @@
                 display: block;
             }
         </style>
+
         <paper-textarea value="{{item.value}}"
-                        label="Text"
-                        always-float-label>
+                        label="Text">
         </paper-textarea>
     </template>
 
@@ -27,6 +28,7 @@
                     }
                 };
             }
+
         }
 
         window.customElements.define(ContentTextEditor.is, ContentTextEditor);
