@@ -41,7 +41,7 @@
     <paper-icon-button alt="Play Story"
                        on-tap="__play"
                        icon="play-arrow"
-                       disabled="[[__isNodeSetEmpty(data.*)]]">Play</paper-icon-button>
+                       disabled="[[!__isStartNodeSpecified(game.startnode)]]">Play</paper-icon-button>
     <paper-icon-button icon="settings"
                        alt="Settings"
                        on-tap="__editSettings"></paper-icon-button>
@@ -181,8 +181,8 @@
         this.dispatchEvent(new CustomEvent('play'));
       }
 
-      __isNodeSetEmpty(dataChangeRecord) {
-        return Object.keys(dataChangeRecord.base).length == 0;
+      __isStartNodeSpecified(startnode) {
+        return startnode;
       }
 
       __close() {
@@ -204,6 +204,11 @@
         // Make sure we deselect the current node.
         this.$.nodelist.selectedKey = null;
         this.set('__currentView', 'empty');
+
+        // If the deleted node was the starting node, unselect it.
+        if (this.game.startnode === key) {
+          this.set('game.startnode', null);
+        }
 
         // Using 'delete' itself does not work in Polymer 2, so to get around this,
         // we make a copy with everything except the one we want to eliminate.
