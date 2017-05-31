@@ -7,6 +7,8 @@
 <link rel="import"
       href="../../bower_components/polymer/lib/elements/array-selector.html">
 <link rel="import"
+      href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import"
       href="../../bower_components/paper-button/paper-button.html">
 <link rel="import"
       href="../../bower_components/paper-dialog/paper-dialog.html">
@@ -41,7 +43,8 @@
             }
         </style>
 
-        <paper-button on-tap="__new">New Story</paper-button>
+        <paper-button on-tap="__new">
+            <iron-icon icon="add"></iron-icon>Story</paper-button>
 
         <!-- Need mutable-data here to see the change to items' names -->
         <template is="dom-repeat"
