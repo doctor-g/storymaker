@@ -6,7 +6,7 @@ TARGET_BRANCH="gh-pages"
 
 function doCompile {
   # Run the tests
-  xvfb-run npm test
+  xvfb-run polymer test
 
   # Build the application
   polymer build
