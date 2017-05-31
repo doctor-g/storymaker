@@ -16,8 +16,11 @@
 
         Story Settings
 
-        <paper-input label="Name"
-                     always-float-label
+        <paper-input label="Story Name"
+                     auto-validate
+                     error-message="Name cannot be empty"
+                     minlength="1"
+                     required
                      value="{{story.name}}">
         </paper-input>
 

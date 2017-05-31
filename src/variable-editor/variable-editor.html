@@ -25,10 +25,16 @@
 
         <div class="content">
             <paper-input label="Name"
-                         always-float-label
+                         auto-validate
+                         error-message="Name cannot be empty"
+                         minlength="1"
+                         required
                          value="{{variable.name}}"></paper-input>
             <paper-input label="Default Value"
-                         always-float-label
+                         auto-validate
+                         error-message="Default value must be specified"
+                         minlength="1"
+                         required
                          value="{{variable.default}}"></paper-input>
         </div>
         <paper-icon-button icon="delete"

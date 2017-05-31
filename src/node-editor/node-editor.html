@@ -63,6 +63,10 @@
         <div class="topbox">
           <paper-input label="Name"
                        value="{{node.name}}"
+                       auto-validate
+                       error-message="Name cannot be empty"
+                       minlength="1"
+                       required
                        on-change="__nameChanged">
           </paper-input>
           <paper-icon-button icon="delete"

@@ -13,6 +13,10 @@
         </style>
 
         <paper-textarea value="{{item.value}}"
+                        required
+                        error-message="Please specify the text content to show"
+                        auto-validate
+                        minlength="1"
                         label="Text">
         </paper-textarea>
     </template>
