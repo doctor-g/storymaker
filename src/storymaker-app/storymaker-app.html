@@ -92,7 +92,7 @@
 
       __onPlay(event) {
         // Set the game if it's a parameter to the event, e.g. from main menu event.
-        if (event.detail.game) {
+        if (event.detail && event.detail.game) {
           this.game = event.detail.game;
         }
         // Start the game.
