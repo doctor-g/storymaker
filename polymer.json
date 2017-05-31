@@ -1,7 +1,8 @@
 {
   "sources": [
     "src/**/*",
-    "manifest.json"
+    "manifest.json",
+    "images/**/*"
   ],
   "builds": [{
     "preset": "es6-bundled",
