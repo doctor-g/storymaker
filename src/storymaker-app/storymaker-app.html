@@ -41,6 +41,7 @@
                    on-close="__onClose">
       </game-editor>
       <game-engine id="engine"
+                   on-quit="__onQuit"
                    game="[[game]]">
       </game-engine>
     </iron-pages>
@@ -102,6 +103,10 @@
 
       __onEdit(event) {
         this.__selected = "editor";
+      }
+
+      __onQuit(event) {
+        this.__selected = "menu";
       }
     }
 

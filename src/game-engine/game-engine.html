@@ -39,7 +39,7 @@
             <paper-icon-button icon="icons:menu"
                                slot="dropdown-trigger"></paper-icon-button>
             <paper-listbox slot="dropdown-content">
-                <paper-item>Return to editor</paper-item>
+                <paper-item on-tap="__quit">Quit</paper-item>
             </paper-listbox>
         </paper-menu-button>
 
@@ -101,6 +101,10 @@
                     variables: stateVariables
                 };
                 return result;
+            }
+
+            __quit() {
+                this.dispatchEvent(new CustomEvent('quit', { bubbles: true, composed: true }));
             }
         }
 
