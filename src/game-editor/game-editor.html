@@ -3,7 +3,7 @@
 <link rel="import"
       href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import"
-      href="../../bower_components/paper-button/paper-button.html">
+      href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import"
       href="../../bower_components/paper-tabs/paper-tabs.html">
 
@@ -32,17 +32,22 @@
       }
     </style>
 
-    <paper-button raised
-                  on-tap="__addNode">Add Node</paper-button>
-    <paper-button raised
-                  on-tap="__addVariable">Add Variable</paper-button>
-    <paper-button raised
-                  on-tap="__play"
-                  disabled="[[__isNodeSetEmpty(data.*)]]">Play</paper-button>
-    <paper-button raised
-                  on-tap="__editSettings">Settings</paper-button>
-    <paper-button raised
-                  on-tap="__close">Close</paper-button>
+    <paper-icon-button src="images/plus_n.png"
+                       alt="Add Node"
+                       on-tap="__addNode"></paper-icon-button>
+    <paper-icon-button src="images/plus_v.png"
+                       alt="Add Variable"
+                       on-tap="__addVariable">+V</paper-icon-button>
+    <paper-icon-button alt="Play Story"
+                       on-tap="__play"
+                       icon="play-arrow"
+                       disabled="[[__isNodeSetEmpty(data.*)]]">Play</paper-icon-button>
+    <paper-icon-button icon="settings"
+                       alt="Settings"
+                       on-tap="__editSettings"></paper-icon-button>
+    <paper-icon-button icon="close"
+                       alt="close story"
+                       on-tap="__close">Close</paper-icon-button>
 
     <keyed-list id="nodelist"
                 class="list"
@@ -209,7 +214,7 @@
 
       __deleteVariable() {
         const key = this.$.variablelist.selectedKey;
-  
+
         // Make sure we deselect the current variable.
         this.$.variablelist.selectedKey = null;
         this.set('__currentView', 'empty');
