@@ -1,4 +1,12 @@
 {
+  "sources": [
+    "src/**/*",
+    "manifest.json"
+  ],
+  "builds": [{
+    "preset": "es6-bundled",
+    "name": "bundled"
+  }],
   "lint": {
     "rules": [
       "polymer-2"
