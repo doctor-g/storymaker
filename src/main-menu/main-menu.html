@@ -13,6 +13,8 @@
 <link rel="import"
       href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import"
+      href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import"
       href="../../bower_components/paper-toast/paper-toast.html">
 
 
@@ -22,30 +24,52 @@
              :host {
                 display: block;
             }
+
+            .storyrow {
+                display: flex;
+                align-items: baseline;
+            }
+
+            .storyrow .name {
+                flex-grow: 1;
+            }
+
+            .storyrow .buttons {
+                justify-content: flex-end;
+                flex-grow: 0;
+                display: flex;
+            }
         </style>
 
-        <paper-button raised
-                      on-tap="__new">New Story</paper-button>
+        <paper-button on-tap="__new">New Story</paper-button>
 
         <!-- Need mutable-data here to see the change to items' names -->
         <template is="dom-repeat"
                   items="[[games]]"
                   mutable-data>
-            <div>
-                [[item.name]]
-                <paper-button raised
-                              on-tap="__edit"
-                              game="[[item]]">Edit</paper-button>
-                <paper-button raised
-                              on-tap="__delete"
-                              game="[[item]]"
-                              index="[[index]]">Delete</paper-button>
-                <paper-button raised
-                              on-tap="__log"
-                              game="[[item]]">Log</paper-button>
-                <paper-button raised
-                              on-tap="__play"
-                              game="[[item]]">Play</paper-button>
+            <div class="storyrow">
+                <div class="name">
+                    [[item.name]]
+                </div>
+                <div class="buttons">
+                    <paper-icon-button icon="create"
+                                       alt="Edit"
+                                       on-tap="__edit"
+                                       game="[[item]]"></paper-icon-button>
+                    <paper-icon-button icon="play-arrow"
+                                       alt="Play"
+                                       on-tap="__play"
+                                       game="[[item]]"></paper-icon-button>
+                    <paper-icon-button icon="delete"
+                                       alt="Delete"
+                                       on-tap="__delete"
+                                       game="[[item]]"
+                                       index="[[index]]"></paper-icon-button>
+                    <paper-icon-button icon="assignment"
+                                       alt="Log"
+                                       on-tap="__log"
+                                       game="[[item]]"></paper-icon-button>
+                </div>
             </div>
         </template>
         <paper-toast id="logtoast"
