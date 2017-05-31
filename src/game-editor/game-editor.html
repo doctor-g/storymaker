@@ -30,24 +30,39 @@
         border-width: 1px;
         border-style: solid;
       }
+
+      .buttons {
+        display: flex;
+      }
+
+      .buttons > paper-icon-button {
+        flex-grow: 0;
+      }
+
+      .buttons > .buttongap {
+        flex-grow: 1;
+      }
     </style>
 
-    <paper-icon-button src="images/plus_n.png"
-                       alt="Add Node"
-                       on-tap="__addNode"></paper-icon-button>
-    <paper-icon-button src="images/plus_v.png"
-                       alt="Add Variable"
-                       on-tap="__addVariable">+V</paper-icon-button>
-    <paper-icon-button alt="Play Story"
-                       on-tap="__play"
-                       icon="play-arrow"
-                       disabled="[[!__isStartNodeSpecified(game.startnode)]]">Play</paper-icon-button>
-    <paper-icon-button icon="settings"
-                       alt="Settings"
-                       on-tap="__editSettings"></paper-icon-button>
-    <paper-icon-button icon="close"
-                       alt="close story"
-                       on-tap="__close">Close</paper-icon-button>
+    <div class="buttons">
+      <paper-icon-button src="images/plus_n.png"
+                         alt="Add Node"
+                         on-tap="__addNode"></paper-icon-button>
+      <paper-icon-button src="images/plus_v.png"
+                         alt="Add Variable"
+                         on-tap="__addVariable">+V</paper-icon-button>
+      <paper-icon-button alt="Play Story"
+                         on-tap="__play"
+                         icon="play-arrow"
+                         disabled="[[!__isStartNodeSpecified(game.startnode)]]">Play</paper-icon-button>
+      <paper-icon-button icon="settings"
+                         alt="Settings"
+                         on-tap="__editSettings"></paper-icon-button>
+      <div class="buttongap"></div>
+      <paper-icon-button icon="close"
+                         alt="close story"
+                         on-tap="__close">Close</paper-icon-button>
+    </div>
 
     <keyed-list id="nodelist"
                 class="list"
