@@ -205,6 +205,12 @@
       }
 
       __editSettings() {
+        this.unlinkPaths('__selectedVariable');
+        this.unlinkPaths('__selectedNode');
+        this.__selectedVariable=null;
+        this.__selectedNode=null;
+        this.$.nodelist.selectedKey = null;
+        this.$.variablelist.selectedKey = null;
         this.$.settingseditor.previousView = this.__currentView;
         this.__currentView = 'settingseditor';
       }
