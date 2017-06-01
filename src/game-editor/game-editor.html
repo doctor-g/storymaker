@@ -90,7 +90,7 @@
 
             <div main-title
                  class="truncated">[[game.name]]</div>
-            <paper-icon-button icon="plus_n" 
+            <paper-icon-button icon="plus_n"
                                alt="Add Node"
                                on-tap="__addNode"></paper-icon-button>
             <paper-icon-button icon="plus_v"
@@ -113,9 +113,11 @@
                     selected="[[__currentView]]"
                     attr-for-selected="view">
           <div view="empty">
-            Create a node or variable, or select an existing one.
-            Use <iron-icon class="small" icon="plus_n"></iron-icon> to create nodes
-            and <iron-icon class="small" icon="plus_v"></iron-icon> to create variables.
+            Create a node or variable, or select an existing one. Use
+            <iron-icon class="small"
+                       icon="plus_n"></iron-icon> to create nodes and
+            <iron-icon class="small"
+                       icon="plus_v"></iron-icon> to create variables.
           </div>
           <settings-editor view="settingseditor"
                            id="settingseditor"
@@ -170,6 +172,10 @@
       __addNode() {
         const id = this.__getAndIncrement('nextNodeId');
         var key = 'node' + id;
+        // Ensure there is a stub object in which to set a subproperty
+        if (!this.game.nodes) {
+          this.set('game.nodes', {});
+        }
         this.set('game.nodes.' + key,
           {
             name: 'Node ' + id,
@@ -202,6 +208,10 @@
       __addVariable() {
         const id = this.__getAndIncrement('nextVariableId');
         var key = 'var' + id;
+        // Ensure there is a stub object in which to set a subproperty
+        if (!this.game.variables) {
+          this.set('game.variables', {});
+        }
         this.set('game.variables.' + key,
           {
             name: 'Variable ' + id,

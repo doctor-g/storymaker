@@ -1,11 +1,12 @@
 <link rel="import"
       href="../../bower_components/polymer/polymer-element.html">
 <link rel="import"
-      href="../../bower_components/polymer/lib/mixins/mutable-data.html">
+      href="../../bower_components/polymer/lib/elements/array-selector.html">
 <link rel="import"
       href="../../bower_components/polymer/lib/elements/dom-repeat.html">
 <link rel="import"
-      href="../../bower_components/polymer/lib/elements/array-selector.html">
+      href="../../bower_components/polymer/lib/mixins/mutable-data.html">
+
 <link rel="import"
       href="../../bower_components/iron-icon/iron-icon.html">
 <link rel="import"
@@ -13,11 +14,15 @@
 <link rel="import"
       href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import"
+      href="../../bower_components/paper-input/paper-input.html">
+<link rel="import"
       href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import"
       href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import"
       href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import"
+      href="../../bower_components/polymerfire/firebase-query.html">
 
 
 <dom-module id="main-menu">
@@ -43,16 +48,33 @@
             }
         </style>
 
+        <firebase-query id="query"
+                        path="/users/[[user.uid]]/stories"
+                        data="{{__stories}}"></firebase-query>
+
+        <array-selector items="[[__stories]]"
+                        selected="{{selected}}"></array-selector>
+
         <paper-button on-tap="__new">
             <iron-icon icon="add"></iron-icon>Story</paper-button>
 
-        <!-- Need mutable-data here to see the change to items' names -->
+        <paper-icon-button on-tap="__upload"
+                           icon="cloud-upload"
+                           alt="Upload"></paper-icon-button>
+        <paper-button on-tap="__signOut">Sign Out</paper-button>
+
+
         <template is="dom-repeat"
-                  items="[[games]]"
-                  mutable-data>
+                  items="[[__stories]]">
             <div class="storyrow">
                 <div class="name">
-                    [[item.name]]
+                    <paper-input class="editor"
+                                 no-label-float
+                                 auto-validate
+                                 minlength="1"
+                                 error-message="Name cannot be empty"
+                                 required
+                                 value="{{item.name}}"></paper-input>
                 </div>
                 <div class="buttons">
                     <paper-icon-button icon="create"
@@ -75,11 +97,10 @@
                 </div>
             </div>
         </template>
-        <paper-toast id="logtoast"
-                     text="Data logged to console"></paper-toast>
 
-        <array-selector items="[[games]]"
-                        selected="{{selected}}"></array-selector>
+        <paper-toast id="logtoast"
+                     text="Data logged to console">
+        </paper-toast>
 
         <paper-dialog id="confirm"
                       modal>
@@ -101,16 +122,13 @@
             static get is() { return 'main-menu'; }
             static get properties() {
                 return {
-                    games: {
-                        type: Array,
-                        notify: true,
-                        value: function () { return []; }
-                    },
                     selected: {
                         type: Object,
                         notify: true
                     },
-                    __dialogDisplayName: String
+                    user: Object,
+                    __dialogDisplayName: String,
+                    __stories: Array
                 };
             }
 
@@ -122,9 +140,9 @@
                     nextNodeId: 0,
                     nextVariableId: 0
                 };
-                this.push('games', game);
-                this.selected = game;
-                this.dispatchEvent(new CustomEvent('edit', { detail: { game: this.selected } }));
+                this.$.query.ref.push(game);
+                //this.selected = game;
+                //this.dispatchEvent(new CustomEvent('edit', { detail: { game: this.selected } }));
             }
 
             __edit(event) {
@@ -134,7 +152,7 @@
 
             __delete(event) {
                 this.__dialogDisplayName = event.srcElement.game.name;
-                this.$.confirm.gameindex = event.srcElement.index;
+                this.$.confirm.key = event.srcElement.game.$key;
                 this.$.confirm.opened = true;
             }
 
@@ -149,7 +167,45 @@
 
             __confirmDeletion(event) {
                 const index = event.srcElement.gameindex;
-                this.splice('games', index, 1);
+                console.log('Deleting story with key ', this.$.confirm.key);
+                this.$.query.ref.child(this.$.confirm.key).remove(function (error) {
+                    if (error) {
+                        console.error('Error deleting story: ', error);
+                    }
+                });
+            }
+
+            __signIn() {
+                this.dispatchEvent(new CustomEvent('sign-in-request'));
+            }
+
+            __signOut() {
+                this.dispatchEvent(new CustomEvent('sign-out-request'));
+            }
+
+            __upload() {
+                if (this.__stories) {
+                    const that = this;
+                    this.__stories.forEach(function (story) {
+                        if (!story.$key) {
+                            console.warn('A story (', story.name, ') is missing $key that should have been added by firebase-query');
+                        }
+
+                        // firebase-query sticks '$key' in, but we cannot use that as a key name
+                        // in what we send back up to firebase. This should make a shallow copy,
+                        // without the offending key.
+                        var storyWithoutFabricatedKey = Object.assign({}, story);
+                        delete storyWithoutFabricatedKey.$key;
+
+                        that.$.query.ref.child(story.$key).set(storyWithoutFabricatedKey, function (error) {
+                            if (error) {
+                                console.error("Upload error: ", error);
+                            } else {
+                                console.log('Upload complete for story ', story.$key);
+                            }
+                        });
+                    });
+                }
             }
         }
 

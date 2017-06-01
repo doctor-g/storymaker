@@ -1,7 +1,5 @@
 <link rel="import"
       href="../../bower_components/polymer/polymer-element.html">
-<link rel="import"
-      href="../../bower_components/paper-input/paper-input.html">
 
 <link rel="import"
       href="../keyed-item-dropdown/keyed-item-dropdown.html">
@@ -15,14 +13,6 @@
         </style>
 
         Story Settings
-
-        <paper-input label="Story Name"
-                     auto-validate
-                     error-message="Name cannot be empty"
-                     minlength="1"
-                     required
-                     value="{{story.name}}">
-        </paper-input>
 
         <keyed-item-dropdown label="Starting Node"
                              data="[[story.nodes]]"
