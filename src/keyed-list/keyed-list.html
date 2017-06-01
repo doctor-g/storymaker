@@ -3,6 +3,8 @@
 <link rel="import"
       href="../../bower_components/polymer/lib/elements/dom-repeat.html">
 <link rel="import"
+      href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import"
       href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import"
       href="../../bower_components/paper-item/paper-item.html">
@@ -17,6 +19,11 @@
              :host {
                 display: block;
             }
+
+            .small {
+                --iron-icon-height: 18px;
+                --iron-icon-width: 18px;
+            }
         </style>
 
         <object-key-mapping data="[[data]]"
@@ -29,6 +36,9 @@
                       items="[[__keys]]"
                       as="key">
                 <paper-item key="[[key]]">
+                    <iron-icon class="small"
+                               icon="star"
+                               hidden="[[!__isStarred(key,starred)]]"></iron-icon>
                     [[__lookupName(data.*,key)]]
                 </paper-item>
             </template>
@@ -41,6 +51,7 @@
             static get properties() {
                 return {
                     data: Object,
+                    starred: String,
                     __keys: Array,
                     // Key of the selected item
                     selectedKey: {
@@ -60,6 +71,10 @@
                         return dataChangeRecord.base[key].name;
                     }
                 }
+            }
+
+            __isStarred(key, starred) {
+                return key === starred;
             }
         }
 
