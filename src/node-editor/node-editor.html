@@ -49,27 +49,28 @@
       }
     </style>
 
+    <div class="topbox">
+      <paper-input label="Name"
+                   value="{{node.name}}"
+                   auto-validate
+                   error-message="Name cannot be empty"
+                   minlength="1"
+                   required
+                   on-change="__nameChanged">
+      </paper-input>
+      <paper-icon-button icon="delete"
+                         on-tap="__deleteNode"></paper-icon-button>
+    </div>
+
     <paper-tabs selected="{{__editOrPreviewSelection}}"
                 attr-for-selected="mode">
-      <paper-tab mode="edit">Edit</paper-tab>
+      <paper-tab mode="edit">Edit Content</paper-tab>
       <paper-tab mode="preview">Preview</paper-tab>
     </paper-tabs>
 
     <iron-pages selected="[[__editOrPreviewSelection]]"
                 attr-for-selected="mode">
       <div mode="edit">
-        <div class="topbox">
-          <paper-input label="Name"
-                       value="{{node.name}}"
-                       auto-validate
-                       error-message="Name cannot be empty"
-                       minlength="1"
-                       required
-                       on-change="__nameChanged">
-          </paper-input>
-          <paper-icon-button icon="delete"
-                             on-tap="__deleteNode"></paper-icon-button>
-        </div>
         <content-editor content="{{node.content}}"
                         game="[[game]]">
         </content-editor>
