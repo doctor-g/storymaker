@@ -2,6 +2,7 @@
       href="../../bower_components/polymer/polymer-element.html">
 <link rel="import"
       href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../../bower_components/polymerfire/polymerfire.html">
 <link rel="import"
       href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import"
@@ -23,6 +24,16 @@
         display: block;
       }
     </style>
+
+    <firebase-app api-key="AIzaSyCLkTbTb2TkNQ1eXw4Ofjy6gDWloHzB17Q"
+      auth-domain="storymaker-cbb6d.firebaseapp.com"
+      database-url="https://storymaker-cbb6d.firebaseio.com"
+      storage-bucket="storymaker-cbb6d.appspot.com"
+      messaging-sender-id="419298660554">
+    </firebase-app>
+
+    <firebase-auth id="auth" user="{{user}}" provider="google" on-error="handleError">
+    </firebase-auth>
 
     <app-localstorage-document key="local-stories"
                                data="{{localData}}">
@@ -70,6 +81,7 @@
               }
             }
           },
+          user: Object,
           __selected: {
             type: String,
             value: "menu"
