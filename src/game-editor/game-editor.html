@@ -1,6 +1,8 @@
 <link rel="import"
       href="../../bower_components/polymer/polymer-element.html">
 <link rel="import"
+      href="../../bower_components/app-layout/app-layout.html">
+<link rel="import"
       href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import"
       href="../../bower_components/paper-icon-button/paper-icon-button.html">
@@ -26,75 +28,111 @@
         display: block;
       }
 
-      .list {
-        border-width: 1px;
-        border-style: solid;
+      app-toolbar {
+        padding: 0px;
+        background-color: var(--primary-color);
+        color: white;
       }
 
-      .buttons {
-        display: flex;
+      .truncated {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
-      .buttons > paper-icon-button {
-        flex-grow: 0;
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none;
       }
 
-      .buttons > .buttongap {
-        flex-grow: 1;
+      #scrollabledrawercontent {
+        height: 100%;
+        overflow: auto;
+      }
+
+      .main {
+        padding: 0 16px;
+      }
+
+      iron-icon.small {
+        --iron-icon-width: 18px;
+        --iron-icon-height: 18px;
+        vertical-align: text-bottom;
       }
     </style>
 
-    <div class="buttons">
-      <paper-icon-button src="images/plus_n.png"
-                         alt="Add Node"
-                         on-tap="__addNode"></paper-icon-button>
-      <paper-icon-button src="images/plus_v.png"
-                         alt="Add Variable"
-                         on-tap="__addVariable">+V</paper-icon-button>
-      <paper-icon-button alt="Play Story"
-                         on-tap="__play"
-                         icon="play-arrow"
-                         disabled="[[!__isStartNodeSpecified(game.startnode)]]">Play</paper-icon-button>
-      <paper-icon-button icon="settings"
-                         alt="Settings"
-                         on-tap="__editSettings"></paper-icon-button>
-      <div class="buttongap"></div>
-      <paper-icon-button icon="close"
-                         alt="close story"
-                         on-tap="__close">Close</paper-icon-button>
-    </div>
+    <app-drawer-layout fullbleed>
+      <app-drawer slot="drawer"
+                  id="drawer"
+                  swipe-open
+                  on-iron-select="__closeDrawer">
 
-    <keyed-list id="nodelist"
-                class="list"
-                data="[[game.nodes]]"
-                starred="[[game.startnode]]"
-                on-iron-select="__onNodeSelect">
-    </keyed-list>
-    <keyed-list id="variablelist"
-                class="list"
-                data="[[game.variables]]"
-                on-iron-select="__onVariableSelect">
-    </keyed-list>
+        <div id="scrollabledrawercontent">
+          <h3>Nodes</h3>
+          <keyed-list id="nodelist"
+                      class="list"
+                      data="[[game.nodes]]"
+                      starred="[[game.startnode]]"
+                      on-iron-select="__onNodeSelect">
+          </keyed-list>
+          <h3>Variables</h3>
+          <keyed-list id="variablelist"
+                      class="list"
+                      data="[[game.variables]]"
+                      on-iron-select="__onVariableSelect">
+          </keyed-list>
+        </div>
+      </app-drawer>
+      <app-header-layout>
+        <app-header slot="header">
+          <app-toolbar>
+            <paper-icon-button icon="menu"
+                               drawer-toggle></paper-icon-button>
 
-    <iron-pages selected="[[__currentView]]"
-                attr-for-selected="view">
-      <div view="empty">
-        Select or create a node
-      </div>
-      <settings-editor view="settingseditor"
-                       id="settingseditor"
-                       story="{{game}}"></settings-editor>
-      <node-editor view="nodeeditor"
-                   id="nodeeditor"
-                   node="{{__selectedNode}}"
-                   game="[[game]]"
-                   on-delete-node="__deleteNode"></node-editor>
-      <variable-editor view="variableeditor"
-                       id="variableeditor"
-                       variable="{{__selectedVariable}}"
-                       on-delete-variable="__deleteVariable"></variable-editor>
-    </iron-pages>
+            <div main-title
+                 class="truncated">[[game.name]]</div>
+            <paper-icon-button icon="plus_n" 
+                               alt="Add Node"
+                               on-tap="__addNode"></paper-icon-button>
+            <paper-icon-button icon="plus_v"
+                               alt="Add Variable"
+                               on-tap="__addVariable">+V</paper-icon-button>
+            <paper-icon-button alt="Play Story"
+                               on-tap="__play"
+                               icon="play-arrow"
+                               disabled="[[!__isStartNodeSpecified(game.startnode)]]">Play</paper-icon-button>
+            <paper-icon-button icon="settings"
+                               alt="Settings"
+                               on-tap="__editSettings"></paper-icon-button>
+            <paper-icon-button icon="close"
+                               alt="close story"
+                               on-tap="__close">Close</paper-icon-button>
+          </app-toolbar>
+        </app-header>
 
+        <iron-pages class="main"
+                    selected="[[__currentView]]"
+                    attr-for-selected="view">
+          <div view="empty">
+            Create a node or variable, or select an existing one.
+            Use <iron-icon class="small" icon="plus_n"></iron-icon> to create nodes
+            and <iron-icon class="small" icon="plus_v"></iron-icon> to create variables.
+          </div>
+          <settings-editor view="settingseditor"
+                           id="settingseditor"
+                           story="{{game}}"></settings-editor>
+          <node-editor view="nodeeditor"
+                       id="nodeeditor"
+                       node="{{__selectedNode}}"
+                       game="[[game]]"
+                       on-delete-node="__deleteNode"></node-editor>
+          <variable-editor view="variableeditor"
+                           id="variableeditor"
+                           variable="{{__selectedVariable}}"
+                           on-delete-variable="__deleteVariable"></variable-editor>
+        </iron-pages>
+
+      </app-header-layout>
+    </app-drawer-layout>
   </template>
 
   <script>
@@ -208,8 +246,8 @@
       __editSettings() {
         this.unlinkPaths('__selectedVariable');
         this.unlinkPaths('__selectedNode');
-        this.__selectedVariable=null;
-        this.__selectedNode=null;
+        this.__selectedVariable = null;
+        this.__selectedNode = null;
         this.$.nodelist.selectedKey = null;
         this.$.variablelist.selectedKey = null;
         this.$.settingseditor.previousView = this.__currentView;
@@ -251,6 +289,10 @@
         var copy = JSON.parse(JSON.stringify(this.game.variables));
         delete copy[key];
         this.set('game.variables', copy);
+      }
+
+      __closeDrawer() {
+        this.$.drawer.close();
       }
     }
 
