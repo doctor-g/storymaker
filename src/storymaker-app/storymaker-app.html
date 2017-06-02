@@ -2,20 +2,24 @@
       href="../../bower_components/polymer/polymer-element.html">
 <link rel="import"
       href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
-<link rel="import" href="../../bower_components/polymerfire/polymerfire.html">
+<link rel="import"
+      href="../../bower_components/polymerfire/firebase-app.html">
+<link rel="import"
+      href="../../bower_components/polymerfire/firebase-document.html">
 <link rel="import"
       href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import"
       href="../../bower_components/paper-tabs/paper-tabs.html">
 
+
+<link rel="import"
+      href="../firebase-signin-dialog/firebase-signin-dialog.html">
 <link rel="import"
       href="../game-editor/game-editor.html">
 <link rel="import"
       href="../game-engine/game-engine.html">
 <link rel="import"
       href="../main-menu/main-menu.html">
-
-
 
 <dom-module id="storymaker-app">
   <template>
@@ -26,14 +30,15 @@
     </style>
 
     <firebase-app api-key="AIzaSyCLkTbTb2TkNQ1eXw4Ofjy6gDWloHzB17Q"
-      auth-domain="storymaker-cbb6d.firebaseapp.com"
-      database-url="https://storymaker-cbb6d.firebaseio.com"
-      storage-bucket="storymaker-cbb6d.appspot.com"
-      messaging-sender-id="419298660554">
+                  auth-domain="storymaker-cbb6d.firebaseapp.com"
+                  database-url="https://storymaker-cbb6d.firebaseio.com"
+                  storage-bucket="storymaker-cbb6d.appspot.com"
+                  messaging-sender-id="419298660554">
     </firebase-app>
 
-    <firebase-auth id="auth" user="{{user}}" provider="google" on-error="handleError">
-    </firebase-auth>
+    <firebase-signin-dialog id="signin"
+                            user="{{user}}">
+    </firebase-signin-dialog>
 
     <app-localstorage-document key="local-stories"
                                data="{{localData}}">
@@ -43,9 +48,12 @@
                 attr-for-selected="id">
       <main-menu id="menu"
                  selected="{{game}}"
+                 user="[[user]]"
                  games="{{localData.games}}"
                  on-play="__onPlay"
-                 on-edit="__onEdit"></main-menu>
+                 on-edit="__onEdit"
+                 on-sign-in-request="__onSignInRequest"
+                 on-sign-out-request="__onSignOutRequest"></main-menu>
       <game-editor id="editor"
                    game="{{game}}"
                    on-play="__onPlay"
@@ -81,7 +89,10 @@
               }
             }
           },
-          user: Object,
+          user: {
+            type: Object,
+            value: null
+          },
           __selected: {
             type: String,
             value: "menu"
@@ -119,6 +130,18 @@
 
       __onQuit(event) {
         this.__selected = "menu";
+      }
+
+      __onSignInRequest(event) {
+        this.$.signin.opened = true;
+      }
+
+      __onSignOutRequest(event) {
+        this.$.signin.$.auth.signOut().then(function () {
+          console.log('signed out successfully');
+        }, function (error) {
+          console.warn('Failed to sign out: ', error);
+        });
       }
     }
 

@@ -19,7 +19,6 @@
 <link rel="import"
       href="../../bower_components/paper-toast/paper-toast.html">
 
-
 <dom-module id="main-menu">
     <template>
         <style>
@@ -45,6 +44,11 @@
 
         <paper-button on-tap="__new">
             <iron-icon icon="add"></iron-icon>Story</paper-button>
+
+        <paper-button on-tap="__signIn"
+                      hidden="[[user]]">Sign In</paper-button>
+        <paper-button on-tap="__signOut"
+                      hidden="[[!user]]">Sign Out</paper-button>
 
         <!-- Need mutable-data here to see the change to items' names -->
         <template is="dom-repeat"
@@ -110,6 +114,7 @@
                         type: Object,
                         notify: true
                     },
+                    user: Object,
                     __dialogDisplayName: String
                 };
             }
@@ -150,6 +155,14 @@
             __confirmDeletion(event) {
                 const index = event.srcElement.gameindex;
                 this.splice('games', index, 1);
+            }
+
+            __signIn() {
+                this.dispatchEvent(new CustomEvent('sign-in-request'));
+            }
+
+            __signOut() {
+                this.dispatchEvent(new CustomEvent('sign-out-request'));
             }
         }
 

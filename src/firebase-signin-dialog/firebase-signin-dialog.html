@@ -1,0 +1,124 @@
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">
+<link rel="import"
+      href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import"
+      href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import"
+      href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import"
+      href="../../bower_components/paper-input/paper-input.html">
+<link rel="import"
+      href="../../bower_components/paper-button/paper-button.html">
+<link rel="import"
+      href="../../bower_components/polymerfire/firebase-auth.html">
+
+<dom-module id="firebase-signin-dialog">
+    <template>
+        <style>
+             :host {
+                display: block;
+            }
+
+            .buttons {
+                display: flex;
+                align-content: flex-end;
+            }
+
+            .error {
+                color: red;
+            }
+        </style>
+
+        <firebase-auth id="auth"
+                       user="{{user}}"
+                       provider="email">
+        </firebase-auth>
+
+        <paper-dialog modal
+                      opened="{{opened}}">
+            <h2>Sign in</h2>
+            <paper-input id="email"
+                         label="Email"
+                         autofocus
+                         auto-validate
+                         required
+                         minlength="1"
+                         value="{{__email}}"
+                         error-message="Cannot be empty"
+                         disabled="[[!__acceptingInput]]"></paper-input>
+            <paper-input id="password"
+                         label="Password"
+                         type="password"
+                         auto-validate
+                         required
+                         minlength="1"
+                         error-message="Cannot be empty"
+                         value="{{__password}}"
+                         disabled="[[!__acceptingInput]]"></paper-input>
+            <div class="error">[[__errorMessage]]</div>
+            <div class="buttons">
+                <paper-button dialog-dismiss
+                              disabled="[[!__acceptingInput]]">Cancel</paper-button>
+                <paper-button on-tap="__signIn"
+                              disabled="[[!__isOkEnabled(__acceptingInput,__email,__password)]]">OK</paper-button>
+            </div>
+        </paper-dialog>
+    </template>
+
+    <script>
+        class FirebaseSigninDialog extends Polymer.Element {
+            static get is() { return 'firebase-signin-dialog'; }
+            static get properties() {
+                return {
+                    opened: {
+                        type: Boolean,
+                        value: false
+                    },
+                    user: {
+                        type: Object,
+                        notify: true
+                    },
+                    __email: String,
+                    __password: String,
+                    __progressVisible: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __acceptingInput: {
+                        type: Boolean,
+                        value: true
+                    },
+                    __errorMessage: {
+                        type: String
+                    }
+                };
+            }
+
+            __isOkEnabled(acceptingInput, email, password) {
+                return acceptingInput
+                    && email
+                    && password
+                    && !this.$.email.invalid
+                    && !this.$.password.invalid;
+            }
+
+            __signIn() {
+                var that = this;
+                this.__errorMessage = null;
+                this.__acceptingInput = false;
+                this.$.auth.signInWithEmailAndPassword(this.__email, this.__password).then(function (response) {
+                    console.log('response: ', response);
+                    that.set('opened', false);
+                },
+                    function (error) {
+                        that.set('__errorMessage', error.message);
+                        that.set('__acceptingInput', true);
+                    });
+            }
+
+        }
+
+        window.customElements.define(FirebaseSigninDialog.is, FirebaseSigninDialog);
+    </script>
+</dom-module>
